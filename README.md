@@ -23,3 +23,5 @@ This project is about MCQS Test. It is developed using laravel framework. The de
 8. Open phpmyadmin, open the users table and change the user_type to 1 to make the first user the admin to inherit the Admin Role
 9. Log into the application
 10. At this point, subsequent registered users inherit the Student Role
+
+#Project is ongoing development
