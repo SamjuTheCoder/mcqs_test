@@ -30,4 +30,6 @@ This project is about MCQS Test. It is developed using laravel framework. The de
 15. My Exams - myExam	
 16. All Exams - allExam
 
+#You can upload .sql file located in the repos
+
 #Project is ongoing development
