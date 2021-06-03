@@ -13,6 +13,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        DB::table('modules')->insert([
+            'moduleName' => 'Create Questions',
+            'route' => 'viewQuestions',
+           
+        ]);
     }
 }
