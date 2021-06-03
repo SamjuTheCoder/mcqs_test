@@ -20,7 +20,7 @@ This project is about MCQS Test. It is developed using laravel framework. The de
 5. Run 'php artisan serve' to run the application
 6. Open http://127.0.0.1:8000/
 7. Click on register link, to create account
-8. Open phpmyadmin, open the users table and set user_type=1 and active=1 default, to make the first user the admin to inherit the Admin Role
+8. Open phpmyadmin, open the users table and set user_type=1 and active=1 as default value, to make the first user the admin to inherit the Admin Role
 9. Log into the application
 10. At this point, subsequent registered users inherit the Student Role
 11. After login as admin, goto Add Module link and create the following modules routes: takeExam, myExam, viewQuestions, viewAnswer, allExam
