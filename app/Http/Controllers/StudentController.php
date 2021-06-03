@@ -51,8 +51,6 @@ class StudentController extends Controller
 
         $data['myAnswers'] = $this->takeexamRepository->all(Auth::user()->id);
 
-       
-
         return view('Student.takeExam',$data);
     }
 
