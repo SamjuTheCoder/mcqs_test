@@ -131,7 +131,7 @@ class AdminController extends Controller
     {
         $this->validate($request, [
             'role'=> 'required',
-            'user'=> 'required',
+            'module_name'=> 'required',
         ]);
         
         $data['rolex'] = $request->role;

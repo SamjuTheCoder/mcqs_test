@@ -63,7 +63,7 @@
                 </div>
 
                 <div class="form-group col-md-6">
-                  <label for="exampleInputEmail1">Module Name</label>
+                  <label for="exampleInputEmail1">User</label>
                   <select id="select-state" class="form-control" name="user" >
                                     <option value="">Choose...</option>
                                     @foreach($user as $pd)
