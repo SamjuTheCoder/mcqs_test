@@ -17,18 +17,12 @@ This project is about MCQS Test. It is developed using laravel framework. The de
     DB_PASSWORD=
 */
 4. Run 'php artisan migrate' to migrate all the tables
-5. Run 'php artisan serve' to run the application
-6. Open http://127.0.0.1:8000/
-7. Click on register link, to create account
-8. Open phpmyadmin, open the users table and set user_type=1 and active=1 as default value, to make the first user the admin to inherit the Admin Role
-9. Log into the application
-10. At this point, subsequent registered users inherit the Student Role
-11. After login as admin, goto Add Module link and create the following modules routes: takeExam, myExam, viewQuestions, viewAnswer, allExam
-12. Create Questions - viewQuestions	
-13. Create Options-	viewAnswer	
-14. Take Exam - takeExam	
-15. My Exams - myExam	
-16. All Exams - allExam
+5. Seed initial record into the db my running: 'php artisan db:seed AdminSeeder', 'php artisan db:seed ModuleSeeder', 'php artisan db:seed RoleSeeder' 
+6. Run 'php artisan serve' to run the application
+7. Open http://127.0.0.1:8000/
+8. Login with: admin@gmail.com and password: 12345
+9.  Click 'Assign User to Role' to assign user to a particulary role
+10. Click 'Assign Module to Role' to assign the available modules to Admin Role(Create Questions module, Create Options module, All Exam module) and Student Role (Take Exam module, My Exam module)
 
 #You can upload .sql file located in the repos
 
