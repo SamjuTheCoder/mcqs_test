@@ -71,9 +71,9 @@
                 <p>&nbsp;</p>
                 @endforeach
                 
-                @if($exists)
+            @if($exists=='')
 
-                @else
+            @else
                 <form method="post" action="">
                 @csrf
 
@@ -92,6 +92,7 @@
                   $i=1; 
                   $score=0;
                   @endphp
+
                   @foreach($myAnswers as $question)
                   <tr>
                     <td>{{ $i++ }}</td>
@@ -99,7 +100,7 @@
                     <td>{{ $question->answer }} @if($question->correct_answer==null) <i  class="fa fa-remove" style="color:red"></i> @else <i  class="fa fa-check" style="color:green"></i> @endif</td>
                     <td>@if($question->correct_answer==null) {{ '0'}} @else {{ $question->score }} @php $score+=$question->score @endphp @endif</td>
                   </tr>
-                 @endforeach
+                  @endforeach
                   <tr>
                   <td><strong>Total Score</strong></td>
                   <td></td>
@@ -111,7 +112,7 @@
               </div>
                 
                 </form>
-                @endif
+            @endif
               </div>
             
           </div>

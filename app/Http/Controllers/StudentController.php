@@ -37,7 +37,8 @@ class StudentController extends Controller
 
     public function takeExam()
     {
-        $data['exists'] = DB::table('questions')->exists();;
+        //dd('kk');
+        $data['exists'] = '';
         $data['question'] = $this->questionRepository->singleQuestion();
     
         return view('Student.takeExam',$data);
