@@ -21,8 +21,8 @@ This project is about MCQS Test. It is developed using laravel framework. The de
 6. Run 'php artisan serve' to run the application
 7. Open http://127.0.0.1:8000/
 8. Login with: admin@gmail.com and password: 12345
-9. Click 'Assign Module to Role' to assign the available modules to Admin role(Create Questions, Create Options, All Exam) and Student Role (Take Exam, My Exam)
-10. Click 'Assign User to Role' to assign user to a particulary role
+9.  Click 'Assign User to Role' to assign user to a particulary role
+10. Click 'Assign Module to Role' to assign the available modules to Admin Role(Create Questions module, Create Options module, All Exam module) and Student Role (Take Exam module, My Exam module)
 
 #You can upload .sql file located in the repos
 
