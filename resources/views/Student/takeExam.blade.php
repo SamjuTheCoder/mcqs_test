@@ -44,7 +44,7 @@
         <div class="col-md-12">
           <!-- general form elements -->
           <div class="box box-primary">
-         
+          <h3 id="time"></h3>
             <br>
             <br>
             <div class="table-responsive" style="margin-left:20px;margin-right:20px;">
@@ -155,4 +155,30 @@
       });
 
 </script>
+
+<script>
+  function startTimer(duration, display) {
+    var timer = duration, minutes, seconds;
+    setInterval(function () {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.textContent = minutes + ":" + seconds;
+
+        if (--timer < 0) {
+            timer = duration;
+        }
+    }, 1000);
+}
+
+window.onload = function () {
+    var fiveMinutes = 60 * 60,
+        display = document.querySelector('#time');
+    startTimer(fiveMinutes, display);
+};
+</script>
+
 @endsection

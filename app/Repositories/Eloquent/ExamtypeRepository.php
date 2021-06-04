@@ -2,8 +2,9 @@
 
 namespace App\Repositories\Eloquent;
 
-use App\Repositories\QuestionRepositoryInterface;
+use App\Repositories\ExamtypeRepositoryInterface;
 use Illuminate\Support\Collection;
+use App\Models\ExamType;
 use App\Models\Question;
 
 //use Your Model
@@ -11,13 +12,13 @@ use App\Models\Question;
 /**
  * Class BrandRepository.
  */
-class QuestionRepository extends BaseRepository implements QuestionRepositoryInterface
+class ExamtypeRepository extends BaseRepository implements ExamtypeRepositoryInterface
 {
     /**
      * @return string
      *  Return the model
      */
-    public function __construct(Question $model)
+    public function __construct(ExamType $model)
     {
         //return YourModel::class;
         parent::__construct($model);
@@ -26,19 +27,9 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
     /**
      * @return Collection
      */
-    public function all(): collection
+    public function all()
     {
-        return $this->model->leftjoin('exam_types','questions.examtype','=','exam_types.id')->get();
-    }
-
-    public function singleQuestion()
-    {
-        return $this->model->limit(1)->get();
-    }
-
-    public function nextQuestion($id)
-    {
-        return $this->model->where('id',$id)->limit(1)->get();
+        return $this->model->all();
     }
 
     public function count()

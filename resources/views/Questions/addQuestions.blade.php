@@ -49,12 +49,21 @@
             <form role="form" method="post" action="{{ route('saveQuestions') }}">
                 @csrf
               <div class="box-body">
+              <div class="form-group col-md-3">
+                  <label for="exampleInputEmail1">Exam Type</label>
+                  <select id="select-state" class="form-control" name="examtype" >
+                                    <option value="">Choose...</option>
+                                    @foreach($examtype as $pd)
+                                    <option value="{{ $pd->id }}" {{ (old("examtype") == $pd->id || old("examtype") == $pd->id )? "selected" :"" }}>{{$pd->type}} </option>
+                                    @endforeach
+                    </select> 
+                </div>
                 <div class="form-group col-md-6">
                   <label for="exampleInputEmail1">Question</label>
                   <input type="text" class="form-control" id="exampleInputEmail1" name="question" placeholder="Enter Questions" required>
                 </div>
 
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-3">
                   <label for="exampleInputEmail1">Score</label>
                   <input type="text" class="form-control" id="exampleInputEmail1" name="score" placeholder="Enter Score" required>
                 </div>
@@ -72,6 +81,7 @@
                   <thead>
                   <tr>
                        <th>SN</th>
+                       <th>Exam Type</th>
                        <th>Questions</th>
                        <th>Score</th>
                        <th>Action</th>
@@ -82,6 +92,7 @@
                   @foreach($questions as $question)
                   <tr>
                    <td>{{ $i++ }}</td>
+                   <td>{{  $question->type }}</td>
                     <td>{{ $question->question }}</td>
                     <td>{{ $question->score }}</td>
                     <td><a onclick="deleteRecord('{{ base64_encode($question->id) }}')"><button class="btn btn-info"><i class="fa fa-trash"></i></button></a></td>

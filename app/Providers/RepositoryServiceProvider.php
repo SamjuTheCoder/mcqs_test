@@ -15,6 +15,8 @@ use App\Repositories\AssignModuleRepositoryInterface;
 use App\Repositories\Eloquent\AssignModuleRepository; 
 use App\Repositories\TakeExamRepositoryInterface; 
 use App\Repositories\Eloquent\TakeExamRepository; 
+use App\Repositories\ExamtypeRepositoryInterface; 
+use App\Repositories\Eloquent\ExamtypeRepository; 
 
 use Illuminate\Support\ServiceProvider; 
 
@@ -34,6 +36,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ModuleRoleRepositoryInterface::class, ModuleRoleRepository::class);
         $this->app->bind(AssignModuleRepositoryInterface::class, AssignModuleRepository::class);
         $this->app->bind(TakeExamRepositoryInterface::class, TakeExamRepository::class);
+        $this->app->bind(ExamtypeRepositoryInterface::class, ExamtypeRepository::class);
     }
 
     /**

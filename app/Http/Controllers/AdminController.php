@@ -8,12 +8,14 @@ use App\Models\Answer;
 use App\Models\Module;
 use App\Models\ModuleRole;
 use App\Models\UserRole;
+use App\Models\ExamType;
 use App\Repositories\QuestionRepositoryInterface;
 use App\Repositories\AnswerRepositoryInterface;
 use App\Repositories\ModuleRoleRepositoryInterface;
 use App\Repositories\AssignModuleRepositoryInterface;
 use App\Repositories\TakeExamRepositoryInterface;
 use App\Repositories\UserRepositoryInterface;
+use App\Repositories\ExamtypeRepositoryInterface;
 use DB;
 
 class AdminController extends Controller
@@ -25,8 +27,9 @@ class AdminController extends Controller
     private $assignmoduleRepository;
     private $takeexamRepository;
     private $userRepository;
+    private $examtypeRepository;
 
-    public function __construct(UserRepositoryInterface $userRepository, TakeExamRepositoryInterface $takeexamRepository,AssignModuleRepositoryInterface $assignmoduleRepository, ModuleRoleRepositoryInterface $moduleroleRepository, QuestionRepositoryInterface $questionRepository,AnswerRepositoryInterface $answerRepository)
+    public function __construct(ExamtypeRepositoryInterface $examtypeRepository, UserRepositoryInterface $userRepository, TakeExamRepositoryInterface $takeexamRepository,AssignModuleRepositoryInterface $assignmoduleRepository, ModuleRoleRepositoryInterface $moduleroleRepository, QuestionRepositoryInterface $questionRepository,AnswerRepositoryInterface $answerRepository)
     {
         $this->middleware('auth');
         $this->answerRepository = $answerRepository;
@@ -35,21 +38,25 @@ class AdminController extends Controller
         $this->assignmoduleRepository = $assignmoduleRepository;
         $this->takeexamRepository = $takeexamRepository;
         $this->userRepository = $userRepository;
+        $this->examtypeRepository = $examtypeRepository;
     }
 
     public function viewQuestions()
     {
         $data['questions'] = $this->questionRepository->all();
+        $data['examtype'] = $this->examtypeRepository->all();
         return view('Questions.addQuestions',$data);
     }
 
+    //add questions
     public function saveQuestions(Request $request)
     {
         $this->validate( $request, [
+            'examtype' => 'required',
             'question' => 'required|string',
         ]);
         
-        $data['questions'] = $this->questionRepository->create(['question'=>$request->question,'score'=>$request->score]);
+        $data['questions'] = $this->questionRepository->create(['examtype'=>$request->examtype,'question'=>$request->question,'score'=>$request->score]);
 
         return back()->with('success','Question addedd successfully!');
     }
