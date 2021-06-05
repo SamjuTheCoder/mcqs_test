@@ -28,17 +28,20 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
      */
     public function all(): collection
     {
-        return $this->model->leftjoin('exam_types','questions.examtype','=','exam_types.id')->get();
+        return $this->model
+        ->leftjoin('exam_types','questions.examtype','=','exam_types.id')
+        ->select('*','questions.id as qid')
+        ->get();
     }
 
     public function singleQuestion()
     {
-        return $this->model->limit(1)->get();
+        return $this->model->limit(1)->inRandomOrder()->get();
     }
 
     public function nextQuestion($id)
     {
-        return $this->model->where('id',$id)->limit(1)->get();
+        return $this->model->where('id',$id)->limit(1)->inRandomOrder()->get();
     }
 
     public function count()

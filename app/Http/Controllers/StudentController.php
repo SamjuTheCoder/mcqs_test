@@ -45,19 +45,28 @@ class StudentController extends Controller
     }
 
     public function saveExam(Request $request)
-    {       
+    {   
+        $data['exists'] = DB::table('take_exams')
+         ->where('userID',Auth::user()->id)
+         ->where('questionID',$request->question)
+         //->where('answerID',$request->answer)
+         ->exists(); 
+
+        if($data['exists']) {
+            return back();
+        }else{
         $this->takeexamRepository->create(['userID'=>Auth::user()->id, 'questionID'=>$request->question, 'answerID'=>$request->answer]);
-        $data['exists'] = DB::table('questions')->where('id',$request->question+1)->exists();
+        
         $data['question'] = $this->questionRepository->nextQuestion($request->question+1);
 
-        $data['myAnswers'] = $this->takeexamRepository->all(Auth::user()->id);
-
+        //$data['myAnswers'] = $this->takeexamRepository->all(Auth::user()->id,1,1);
+        }
         return view('Student.takeExam',$data);
     }
 
     public function myExam()
     {
-        $data['myAnswers'] = $this->takeexamRepository->all(Auth::user()->id);
+        $data['myAnswers'] = $this->takeexamRepository->all(Auth::user()->id,1,1);
 
         return view('Student.viewAnswers',$data);
     }

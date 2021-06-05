@@ -71,48 +71,6 @@
                 <p>&nbsp;</p>
                 @endforeach
                 
-            @if($exists=='')
-
-            @else
-                <form method="post" action="">
-                @csrf
-
-                <div class="table-responsive">
-                <table class="table no-margin">
-                  <thead>
-                  <tr>
-                       <th>SN</th>
-                       <th>Questions</th>
-                       <th>Answer</th>
-                       <th>Score</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  @php 
-                  $i=1; 
-                  $score=0;
-                  @endphp
-
-                  @foreach($myAnswers as $question)
-                  <tr>
-                    <td>{{ $i++ }}</td>
-                    <td>{{ $question->question }}</td>
-                    <td>{{ $question->answer }} @if($question->correct_answer==null) <i  class="fa fa-remove" style="color:red"></i> @else <i  class="fa fa-check" style="color:green"></i> @endif</td>
-                    <td>@if($question->correct_answer==null) {{ '0'}} @else {{ $question->score }} @php $score+=$question->score @endphp @endif</td>
-                  </tr>
-                  @endforeach
-                  <tr>
-                  <td><strong>Total Score</strong></td>
-                  <td></td>
-                  <td></td>
-                  <td><strong>{{ $score }}</strong></td>
-                 </tr>
-                  </tbody>
-                </table>
-              </div>
-                
-                </form>
-            @endif
               </div>
             
           </div>
@@ -146,7 +104,7 @@
     }
 </script>
 
-<script>
+<!-- <script>
 
     $(document).ready(function () {
           $('select').selectize({
@@ -179,6 +137,42 @@ window.onload = function () {
         display = document.querySelector('#time');
     startTimer(fiveMinutes, display);
 };
-</script>
+</script> -->
 
+<script>
+ //defining timer for donor 1 appearing on receiver dashboard
+
+// Set the date we're counting down to
+var countDownDate = new Date("<?php echo '6-5-2021 14:55' ?>").getTime();
+// var countDownDate = new Date("").getTime();
+
+// Update the count down every 1 second
+var x = setInterval(function() {
+
+    // Get todays date and time
+    var now = new Date().getTime();
+    
+    // Find the distance between now an the count down date
+    var distance = countDownDate - now;
+    
+    // Time calculations for days, hours, minutes and seconds
+    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+    // Output the result in an element with id="demo"
+    document.getElementById("time").innerHTML =  hours + "h "
+    + minutes + "m " + seconds + "s ";
+    
+    // If the count down is over, write some text 
+    if (distance < 0) {
+        location.href = "elapse.php?email=";
+        clearInterval(x);
+        document.getElementById("time").innerHTML = "EXPIRED";
+    }
+}, 1000);
+
+
+</script>
 @endsection

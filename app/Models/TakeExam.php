@@ -13,6 +13,8 @@ class TakeExam extends Model
         'userID',
         'questionID',
         'answerID',
+        'status',
+        'isConfirmed',
         
     ];
 

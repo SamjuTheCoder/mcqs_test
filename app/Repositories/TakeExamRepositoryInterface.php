@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 
 interface TakeExamRepositoryInterface
 {
-   public function all($id);
+   public function all($id,$status,$confirm);
 
    public function allExam();
 

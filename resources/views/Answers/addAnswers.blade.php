@@ -56,7 +56,7 @@
                   <select id="select-state" class="form-control" name="question" >
                                     <option value="">Choose...</option>
                                     @foreach($question as $pd)
-                                    <option value="{{ $pd->id }}" {{ ($questionx == $pd->id || old("question") == $pd->id )? "selected" :"" }}>{{$pd->question}} </option>
+                                    <option value="{{ $pd->qid }}" {{ ($questionx == $pd->qid || old("question") == $pd->qid )? "selected" :"" }}>{{$pd->question}} </option>
                                     @endforeach
                                 </select>
                 </div>

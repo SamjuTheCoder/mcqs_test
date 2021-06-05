@@ -45,6 +45,7 @@ class AdminController extends Controller
     {
         $data['questions'] = $this->questionRepository->all();
         $data['examtype'] = $this->examtypeRepository->all();
+
         return view('Questions.addQuestions',$data);
     }
 
@@ -75,6 +76,7 @@ class AdminController extends Controller
         //$data['answer']=null;
         $data['question'] = $this->questionRepository->all();
         $data['answer'] = $this->answerRepository->all();
+        //dd($data['question']);
         return view('Answers.addAnswers',$data);
     }
 

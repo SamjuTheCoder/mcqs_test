@@ -27,9 +27,9 @@ class TakeExamRepository extends BaseRepository implements TakeExamRepositoryInt
     /**
      * @return Collection
      */
-    public function all($id)
+    public function all($id,$status,$confirm)
     {
-        return $this->model->where('userID',$id)->leftjoin('answers','take_exams.answerID','=','answers.id')->leftjoin('questions','take_exams.questionID','=','questions.id')->get();
+        return $this->model->where('userID',$id)->where('status',$status)->where('isConfirmed',$confirm)->leftjoin('answers','take_exams.answerID','=','answers.id')->leftjoin('questions','take_exams.questionID','=','questions.id')->get();
     }  
 
     public function allExam()
