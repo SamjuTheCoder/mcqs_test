@@ -23,17 +23,5 @@ interface EloquentRepositoryInterface
     */
    public function find($id): ?Model;
 
-    /**
-     * @param $id
-     * @return Model
-     */
-    public function edit($id): ?Model;
-
-   /**
-    * @param $id
-    * @return Model
-    */
-    public function delete($id): ?Model;
-
-   
+       
 }

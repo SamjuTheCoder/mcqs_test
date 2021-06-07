@@ -30,6 +30,7 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
     {
         return $this->model
         ->leftjoin('exam_types','questions.examtype','=','exam_types.id')
+        ->leftjoin('student_classes','questions.class','=','student_classes.id')
         ->select('*','questions.id as qid')
         ->get();
     }
@@ -50,7 +51,7 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
     }
 
     public function deleteQuestion($id)
-    {
+    {   
         return $this->model->find($id)->delete();
     }
 }

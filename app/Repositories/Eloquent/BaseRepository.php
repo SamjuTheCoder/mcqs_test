@@ -41,21 +41,5 @@ class BaseRepository implements EloquentRepositoryInterface
         return $this->model->find($id);
     }
 
-    /**
-     * @param $id
-     * @return Model
-     */
-    public function edit($id): ?Model
-    {
-        return $this->model->edit($id);
-    }
-
-    /**
-     * @param $id
-     * @return Model
-     */
-    public function delete($id): ?Model
-    {
-        return $this->model->delete($id);
-    }
+    
 }

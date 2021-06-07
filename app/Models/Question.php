@@ -10,6 +10,10 @@ class Question extends Model
     use HasFactory;
 
     protected $fillable = [
+        'class',
+        'session',
+        'term',
+        'year',
         'examtype',
         'question',
         'score',

@@ -100,7 +100,7 @@
                    <td>{{ $i++ }}</td>
                     <td>{{ $ans->question }}</td>
                     <td>{{ $ans->answer }} @if($ans->correct_answer==1)<span class="fa fa-check" style="color:red"></span>@else @endif</td>
-                    <td><a onclick="deleteRecord('{{ base64_encode($ans->id) }}')"><button class="btn btn-info"><i class="fa fa-trash"></i></button></a></td>
+                    <td><a onclick="deleteRecord('{{ base64_encode($ans->aid) }}')"><button class="btn btn-info"><i class="fa fa-trash"></i></button></a></td>
                   </tr>
                  @endforeach
                 
