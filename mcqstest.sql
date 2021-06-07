@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 04, 2021 at 10:49 AM
+-- Generation Time: Jun 05, 2021 at 03:30 PM
 -- Server version: 10.4.18-MariaDB
 -- PHP Version: 8.0.5
 
@@ -35,6 +35,41 @@ CREATE TABLE `answers` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `answers`
+--
+
+INSERT INTO `answers` (`id`, `answer`, `correct_answer`, `question_id`, `created_at`, `updated_at`) VALUES
+(1, 'A', NULL, 1, '2021-06-05 11:01:28', '2021-06-05 11:01:28'),
+(2, 'B', 1, 1, '2021-06-05 11:01:40', '2021-06-05 11:01:40'),
+(3, 'C', NULL, 1, '2021-06-05 11:01:55', '2021-06-05 11:01:55'),
+(4, 'D', NULL, 1, '2021-06-05 11:15:17', '2021-06-05 11:15:17'),
+(5, 'A', NULL, 2, '2021-06-05 11:16:46', '2021-06-05 11:16:46'),
+(6, 'B', NULL, 2, '2021-06-05 11:17:26', '2021-06-05 11:17:26'),
+(7, 'C', NULL, 2, '2021-06-05 11:21:28', '2021-06-05 11:21:28'),
+(8, 'D', 1, 2, '2021-06-05 11:25:11', '2021-06-05 11:25:11');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `exam_types`
+--
+
+CREATE TABLE `exam_types` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `exam_types`
+--
+
+INSERT INTO `exam_types` (`id`, `type`, `created_at`, `updated_at`) VALUES
+(1, 'Semester Exam', NULL, NULL),
+(2, 'Common Entrance', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -72,13 +107,14 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (1, '2014_10_12_000000_create_users_table', 1),
 (2, '2014_10_12_100000_create_password_resets_table', 1),
 (3, '2019_08_19_000000_create_failed_jobs_table', 1),
-(4, '2021_06_02_123125_create_questions_table', 1),
-(5, '2021_06_02_123443_create_answers_table', 1),
-(6, '2021_06_02_193054_create_roles_table', 1),
-(7, '2021_06_02_193959_create_user_roles_table', 1),
-(8, '2021_06_02_194351_create_module_roles_table', 1),
-(9, '2021_06_02_194600_create_modules_table', 1),
-(10, '2021_06_03_094754_create_take_exams_table', 1);
+(4, '2021_06_02_123443_create_answers_table', 1),
+(5, '2021_06_02_193054_create_roles_table', 1),
+(6, '2021_06_02_193959_create_user_roles_table', 1),
+(7, '2021_06_02_194351_create_module_roles_table', 1),
+(8, '2021_06_02_194600_create_modules_table', 1),
+(9, '2021_06_03_094754_create_take_exams_table', 1),
+(10, '2021_06_04_133031_create_exam_types_table', 1),
+(11, '2021_06_04_140428_create_questions_table', 1);
 
 -- --------------------------------------------------------
 
@@ -124,11 +160,11 @@ CREATE TABLE `module_roles` (
 --
 
 INSERT INTO `module_roles` (`id`, `roleID`, `moduleID`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, '2021-06-04 07:35:56', '2021-06-04 07:35:56'),
-(2, 1, 2, '2021-06-04 07:38:10', '2021-06-04 07:38:10'),
-(3, 2, 4, '2021-06-04 07:40:12', '2021-06-04 07:40:12'),
-(4, 2, 3, '2021-06-04 07:41:44', '2021-06-04 07:41:44'),
-(5, 1, 5, '2021-06-04 07:43:55', '2021-06-04 07:43:55');
+(1, 1, 1, '2021-06-05 10:58:07', '2021-06-05 10:58:07'),
+(2, 1, 2, '2021-06-05 10:58:16', '2021-06-05 10:58:16'),
+(3, 1, 5, '2021-06-05 10:58:27', '2021-06-05 10:58:27'),
+(4, 2, 3, '2021-06-05 11:25:37', '2021-06-05 11:25:37'),
+(5, 2, 4, '2021-06-05 11:25:44', '2021-06-05 11:25:44');
 
 -- --------------------------------------------------------
 
@@ -150,11 +186,20 @@ CREATE TABLE `password_resets` (
 
 CREATE TABLE `questions` (
   `id` bigint(20) UNSIGNED NOT NULL,
+  `examtype` int(11) NOT NULL,
   `question` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `score` int(11) NOT NULL,
+  `score` int(11) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `questions`
+--
+
+INSERT INTO `questions` (`id`, `examtype`, `question`, `score`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Which of the following is Ajax?', 6, '2021-06-05 10:58:48', '2021-06-05 10:58:48'),
+(2, 1, 'What is the meaning of Laravel', 10, '2021-06-05 10:59:01', '2021-06-05 10:59:01');
 
 -- --------------------------------------------------------
 
@@ -188,9 +233,19 @@ CREATE TABLE `take_exams` (
   `userID` int(11) NOT NULL,
   `questionID` int(11) DEFAULT NULL,
   `answerID` int(11) DEFAULT NULL,
+  `status` int(11) NOT NULL DEFAULT 0,
+  `isConfirmed` int(11) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `take_exams`
+--
+
+INSERT INTO `take_exams` (`id`, `userID`, `questionID`, `answerID`, `status`, `isConfirmed`, `created_at`, `updated_at`) VALUES
+(4, 2, 1, 2, 0, 0, '2021-06-05 12:12:49', '2021-06-05 12:12:49'),
+(5, 2, 2, 6, 0, 0, '2021-06-05 12:13:10', '2021-06-05 12:13:10');
 
 -- --------------------------------------------------------
 
@@ -217,7 +272,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `username`, `password`, `user_type`, `active`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Admin User', 'admin@gmail.com', NULL, 'admin', '$2y$10$.OCVAZg1hynHwi70ttAUY.0KxwBPabWfS8j0cS.1x2pdH0SG36Ya2', 1, 1, NULL, NULL, NULL);
+(1, 'Admin User', 'admin@gmail.com', NULL, 'admin', '$2y$10$fPM5MbcV2a6KkSrvQ9Jd7Ofk7wMrQE3u86bwCZ2UlZOKJStJZXvj.', 1, 1, NULL, NULL, NULL),
+(2, 'Sudent', 'student@gmail.com', NULL, NULL, '$2y$10$4VDpnGzv/hCVRx1Cpp2vvu8IQn/Tsljxjp0QJ7x5i47FQ00mH91W.', 0, 1, NULL, '2021-06-05 11:26:18', '2021-06-05 11:26:18');
 
 -- --------------------------------------------------------
 
@@ -238,7 +294,8 @@ CREATE TABLE `user_roles` (
 --
 
 INSERT INTO `user_roles` (`id`, `userID`, `roleID`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, '2021-06-04 07:38:20', '2021-06-04 07:38:20');
+(1, 1, 1, '2021-06-05 10:57:55', '2021-06-05 10:57:55'),
+(2, 2, 2, '2021-06-05 11:26:49', '2021-06-05 11:26:49');
 
 --
 -- Indexes for dumped tables
@@ -248,6 +305,12 @@ INSERT INTO `user_roles` (`id`, `userID`, `roleID`, `created_at`, `updated_at`) 
 -- Indexes for table `answers`
 --
 ALTER TABLE `answers`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `exam_types`
+--
+ALTER TABLE `exam_types`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -320,7 +383,13 @@ ALTER TABLE `user_roles`
 -- AUTO_INCREMENT for table `answers`
 --
 ALTER TABLE `answers`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `exam_types`
+--
+ALTER TABLE `exam_types`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -332,7 +401,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `modules`
@@ -350,7 +419,7 @@ ALTER TABLE `module_roles`
 -- AUTO_INCREMENT for table `questions`
 --
 ALTER TABLE `questions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `roles`
@@ -362,19 +431,19 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `take_exams`
 --
 ALTER TABLE `take_exams`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `user_roles`
 --
 ALTER TABLE `user_roles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

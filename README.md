@@ -17,7 +17,7 @@ This project is about MCQS Test. It is developed using laravel framework. The de
     DB_PASSWORD=
 */
 4. Run 'php artisan migrate' to migrate all the tables
-5. Seed initial record into the db my running: 'php artisan db:seed AdminSeeder', 'php artisan db:seed ModuleSeeder', 'php artisan db:seed RoleSeeder' 
+5. Seed initial record into the db by running: 'php artisan db:seed DatabaseSeeder' 
 6. Run 'php artisan serve' to run the application
 7. Open http://127.0.0.1:8000/
 8. Login with: admin@gmail.com and password: 12345
