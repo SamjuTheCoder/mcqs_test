@@ -6,12 +6,12 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Add Answers
+        Add Options
  
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Answers</a></li>
+        <li><a href="#">Options</a></li>
         <li class="active">Add</li>
       </ol>
     </section>
@@ -56,15 +56,17 @@
                   <select id="select-state" class="form-control" name="question" >
                                     <option value="">Choose...</option>
                                     @foreach($question as $pd)
-                                    <option value="{{ $pd->qid }}" {{ ($questionx == $pd->qid || old("question") == $pd->qid )? "selected" :"" }}>{{$pd->question}} </option>
+                                    <option value="{{ $pd->id }}" {{ ($questionx == $pd->id || old("question") == $pd->id )? "selected" :"" }}>{{$pd->question}} </option>
                                     @endforeach
                                 </select>
                 </div>
               
               <div class="row">
                 <div class="form-group col-md-12">
-                  <label for="exampleInputEmail1">Answer</label>
+                  <label for="exampleInputEmail1">Option</label>
+                  <input type="hidden" class="form-control" id="questionID" name="questionID" value="{{ $questionID }}">
                   <input type="text" class="form-control" id="exampleInputEmail1" name="answer" placeholder="Enter Answer" required>
+                 
                   <label>
                     <input type="checkbox" name="correct_answer" value="1"> Is correct answer?
                   </label>
@@ -88,8 +90,8 @@
                   <thead>
                   <tr>
                        <th>SN</th>
-                       <th>Questions</th>
-                       <th>Answer</th>
+                       <!-- <th>Questions</th> -->
+                       <th>Option</th>
                        <th>Action</th>
                   </tr>
                   </thead>
@@ -98,9 +100,8 @@
                   @foreach($answer as $ans)
                   <tr>
                    <td>{{ $i++ }}</td>
-                    <td>{{ $ans->question }}</td>
                     <td>{{ $ans->answer }} @if($ans->correct_answer==1)<span class="fa fa-check" style="color:red"></span>@else @endif</td>
-                    <td><a onclick="deleteRecord('{{ base64_encode($ans->aid) }}')"><button class="btn btn-info"><i class="fa fa-trash"></i></button></a></td>
+                    <td><a onclick="deleteRecord('{{ base64_encode($ans->aid) }}')"><button class="btn btn-danger" title="Delete Record"><i class="fa fa-trash"></i></button></a></td>
                   </tr>
                  @endforeach
                 

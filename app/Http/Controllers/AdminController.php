@@ -56,21 +56,34 @@ class AdminController extends Controller
         $this->classRepository = $classRepository;
     }
 
-    public function viewQuestions()
+    public function viewQuestions($id)
     {
-        $data['sessionx']='';
-        $data['termx']='';
-        $data['yearx']='';
-        $data['examtypex']='';
-        $data['classx']='';
+        $data['examID'] = base64_decode($id);
+        //dd($data['examID']);
+        $data['title'] = DB::table('create_exams')
+        ->where('create_exams.id',$data['examID'])
+        ->leftjoin('exam_types','create_exams.examtype','=','exam_types.id')
+        ->leftjoin('student_classes','create_exams.class','=','student_classes.id')
+        ->leftjoin('subjects','create_exams.subject','=','subjects.id')
+        ->first();
 
-        $data['questions'] = $this->questionRepository->all();
+        $data['questions'] = $this->questionRepository->all($data['examID']);
 
-        $data['examtype'] = $this->examtypeRepository->all();
-        $data['session'] = $this->sessionRepository->all();
-        $data['term'] = $this->semesterRepository->all();
-        $data['year'] = $this->yearRepository->all();
-        $data['class'] = $this->classRepository->all();
+        return view('Questions.viewQuestions',$data);
+    }
+
+    public function addQuestions($id)
+    {
+        $data['examID'] = base64_decode($id);
+        //dd($data['examID']);
+        $data['title'] = DB::table('create_exams')
+        ->where('create_exams.id',$data['examID'])
+        ->leftjoin('exam_types','create_exams.examtype','=','exam_types.id')
+        ->leftjoin('student_classes','create_exams.class','=','student_classes.id')
+        ->leftjoin('subjects','create_exams.subject','=','subjects.id')
+        ->first();
+
+        $data['questions'] = $this->questionRepository->all($data['examID']);
 
         return view('Questions.addQuestions',$data);
     }
@@ -79,37 +92,20 @@ class AdminController extends Controller
     public function saveQuestions(Request $request)
     {
         $this->validate( $request, [
-            'class' => 'required',
-            'session' => 'required',
-            'term' => 'required|string',
-            'year' => 'required',
             'question' => 'required|string',
-            'examtype' => 'required',
            ]);
         
+        //dd($request->exam);
 
-        $data['sessionx'] = $request->session;
-        $data['termx']  = $request->term;
-        $data['yearx']  = $request->year;
-        $data['examtypex']  = $request->examtype;
-        $data['classx'] =  $request->class;
-
-        
-        $data['examtype'] = $this->examtypeRepository->all();
-        $data['session'] = $this->sessionRepository->all();
-        $data['term'] = $this->semesterRepository->all();
-        $data['year'] = $this->yearRepository->all();
-        $data['class'] = $this->classRepository->all();
-        
-        if(DB::table('questions')->where('class',$request->class)->where('session',$request->session)->where('term',$request->term)->where('year',$request->year)
-        ->where('examtype',$request->examtype)->where('question',$request->question)->exists()){
+        if(DB::table('questions')->where('question',$request->question)->exists()){
             return back()->with('error_message','Question already exists');
-        }else {
-        $data['questions'] = $this->questionRepository->create(['class'=>$request->class,'session'=>$request->session,'term'=>$request->term,'year'=>$request->year,'examtype'=>$request->examtype,'question'=>$request->question,'score'=>$request->score]);
         }
-        $data['questions'] = $this->questionRepository->all();
-        //return back()->with('success','Question addedd successfully!');
-        return view('Questions.addQuestions',$data);
+
+        $data['questions'] = $this->questionRepository->create(['examID'=> $request->exam,'question'=>$request->question,'score'=>$request->score]);
+        $data['questions'] = $this->questionRepository->all($request->exam);
+
+        return back()->with('success','Question addedd successfully!');
+        //return view('Questions.addQuestions',$data);
     }
 
     public function deleteQuestions($id)
@@ -128,8 +124,20 @@ class AdminController extends Controller
     {
         $data['questionx']='';
         //$data['answer']=null;
-        $data['question'] = $this->questionRepository->all();
+        $data['question'] = DB::table('questions')->get();
         $data['answer'] = $this->answerRepository->all();
+        //dd($data['question']);
+        return view('Answers.addAnswers',$data);
+    }
+
+    //answers 
+    public function addOptions($id)
+    {
+        //dd(base64_decode($id));
+        $data['questionx']=base64_decode($id);
+        $data['questionID']=base64_decode($id);
+        $data['question'] = DB::table('questions')->where('id',base64_decode($id))->get();
+        $data['answer'] = $this->answerRepository->all(base64_decode($id));
         //dd($data['question']);
         return view('Answers.addAnswers',$data);
     }
@@ -137,7 +145,7 @@ class AdminController extends Controller
     public function saveAnswers(Request $request)
     {
         $data['questionx'] = $request->question;
-        $data['question'] = $this->questionRepository->all();
+        $data['question'] = DB::table('questions')->get();
 
         if(DB::table('answers')->where('answer',$request->answer)->where('question_id',$request->question)->exists()){
             return back()->with('error_message','Record already exists');
@@ -191,7 +199,7 @@ class AdminController extends Controller
         $data['modulex'] = '';
 
         $data['role'] = DB::table('roles')->get();
-        $data['modules'] = $this->moduleroleRepository->all();
+        $data['modules'] = DB::table('modules')->get();
 
         $data['module'] = $this->assignmoduleRepository->all();
 

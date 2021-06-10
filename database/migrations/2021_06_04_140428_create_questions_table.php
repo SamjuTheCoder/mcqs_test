@@ -15,11 +15,7 @@ class CreateQuestionsTable extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->integer('class');
-            $table->string('session');
-            $table->string('term');
-            $table->string('year');
-            $table->integer('examtype');
+            $table->string('examID');
             $table->string('question');
             $table->integer('score')->nullable();
             $table->timestamps();

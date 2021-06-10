@@ -27,9 +27,10 @@ class AnswerRepository extends BaseRepository implements AnswerRepositoryInterfa
     /**
      * @return Collection
      */
-    public function all()
+    public function all($id)
     {
         return $this->model->leftjoin('questions','answers.question_id','=','questions.id')
+        ->where('question_id',$id)
         ->select('*','answers.id as aid')
         ->paginate(6);
     }

@@ -26,6 +26,10 @@ use App\Repositories\AcademicYearInterface;
 use App\Repositories\Eloquent\AcademicYearRepository; 
 use App\Repositories\ClassInterface; 
 use App\Repositories\Eloquent\ClassRepository; 
+use App\Repositories\TimeInterface; 
+use App\Repositories\Eloquent\TimeRepository; 
+use App\Repositories\Eloquent\CreateExamRepository;
+use App\Repositories\CreateExamInterface;
 
 use Illuminate\Support\ServiceProvider; 
 
@@ -50,6 +54,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(AcademicSessionInterface::class, AcademicSessionRepository::class);
         $this->app->bind(AcademicYearInterface::class, AcademicYearRepository::class);
         $this->app->bind(ClassInterface::class, ClassRepository::class);
+        $this->app->bind(TimeInterface::class, TimeRepository::class);
+        $this->app->bind(CreateExamInterface::class, CreateExamRepository::class);
     }
 
     /**

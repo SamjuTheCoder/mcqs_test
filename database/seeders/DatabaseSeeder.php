@@ -145,47 +145,73 @@ class DatabaseSeeder extends Seeder
             
         // ]);
 
-        DB::table('student_classes')->insert([
+        // DB::table('student_classes')->insert([
 
-            [
-                'class' => 'Primary 1A',
-            ],
-            [
-                'class' => 'Primary 2A',
-            ],
-            [
-                'class' => 'Primary 3A',
-            ],
-            [
-                'class' => 'Primary 4A',
-            ],
-            [
-                'class' => 'Primary 5A',
-            ],
-            [
-                'class' => 'Primary 6A',
-            ],
-            [
-                'class' => 'JSS 1A',
-            ],
-            [
-                'class' => 'JSS 2A',
-            ],
-            [
-                'class' => 'JSS 3A',
-            ],
-            [
-                'class' => 'SSS 1A',
-            ],
-            [
-                'class' => 'SSS 2A',
-            ],
-            [
-                'class' => 'SSS 3A',
-            ],
+        //     [
+        //         'class' => 'Primary 1A',
+        //     ],
+        //     [
+        //         'class' => 'Primary 2A',
+        //     ],
+        //     [
+        //         'class' => 'Primary 3A',
+        //     ],
+        //     [
+        //         'class' => 'Primary 4A',
+        //     ],
+        //     [
+        //         'class' => 'Primary 5A',
+        //     ],
+        //     [
+        //         'class' => 'Primary 6A',
+        //     ],
+        //     [
+        //         'class' => 'JSS 1A',
+        //     ],
+        //     [
+        //         'class' => 'JSS 2A',
+        //     ],
+        //     [
+        //         'class' => 'JSS 3A',
+        //     ],
+        //     [
+        //         'class' => 'SSS 1A',
+        //     ],
+        //     [
+        //         'class' => 'SSS 2A',
+        //     ],
+        //     [
+        //         'class' => 'SSS 3A',
+        //     ],
             
-        ]);
+        // ]);
 
+
+        DB::table('subjects')->insert([
+
+            [
+                'subject' => 'English Language',
+            ],
+            [
+                'subject' => 'Mathematics',
+            ],
+            [
+                'subject' => 'Physics',
+            ],
+            [
+                'subject' => 'Geography',
+            ],
+            [
+                'subject' => 'Economics',
+            ],
+            [
+                'subject' => 'Biology',
+            ],
+            [
+                'subject' => 'Physical Education',
+            ],
+                        
+        ]);
 
     }
 }

@@ -143,7 +143,7 @@ window.onload = function () {
  //defining timer for donor 1 appearing on receiver dashboard
 
 // Set the date we're counting down to
-var countDownDate = new Date("<?php echo '6-5-2021 14:55' ?>").getTime();
+var countDownDate = new Date("<?php echo '7-6-2021 16:10' ?>").getTime();
 // var countDownDate = new Date("").getTime();
 
 // Update the count down every 1 second

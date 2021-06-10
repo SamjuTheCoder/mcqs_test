@@ -26,11 +26,11 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
     /**
      * @return Collection
      */
-    public function all(): collection
+    public function all($id): collection
     {
         return $this->model
-        ->leftjoin('exam_types','questions.examtype','=','exam_types.id')
-        ->leftjoin('student_classes','questions.class','=','student_classes.id')
+        ->where('questions.examID',$id)
+        ->leftjoin('create_exams','questions.examID','=','create_exams.id')
         ->select('*','questions.id as qid')
         ->get();
     }

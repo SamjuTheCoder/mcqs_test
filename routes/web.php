@@ -25,15 +25,26 @@ Route::group(['/middleware' => ['auth']], function ()
 {
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+//create exams
+Route::get('/create-exams', [App\Http\Controllers\CreateExamController::class, 'viewExams'])->name('viewExams');
+Route::post('/create-exams', [App\Http\Controllers\CreateExamController::class, 'saveExams'])->name('saveExams');
+Route::get('/delete-exams/{id}', [App\Http\Controllers\CreateExamController::class, 'deleteExams'])->name('deleteExams');
+Route::get('/get-subject', [App\Http\Controllers\CreateExamController::class, 'loadSubects'])->name('loadSubects'); //ajax
+
+ 
 //add questions
-Route::get('/add-questions', [App\Http\Controllers\AdminController::class, 'viewQuestions'])->name('viewQuestions');
+Route::get('/add-questions/{id}', [App\Http\Controllers\AdminController::class, 'addQuestions'])->name('addQuestions');
 Route::post('/add-questions', [App\Http\Controllers\AdminController::class, 'saveQuestions'])->name('saveQuestions');
 Route::get('/delete-questions/{id}', [App\Http\Controllers\AdminController::class, 'deleteQuestions'])->name('deleteQuestions');
+Route::get('/view-questions/{id}', [App\Http\Controllers\AdminController::class, 'viewQuestions'])->name('viewQuestions');
 
 //add answers
 Route::get('/add-answers', [App\Http\Controllers\AdminController::class, 'viewAnswers'])->name('viewAnswer');
 Route::post('/add-answers', [App\Http\Controllers\AdminController::class, 'saveAnswers'])->name('saveAnswer');
 Route::get('/delete-answers/{id}', [App\Http\Controllers\AdminController::class, 'deleteAnswers'])->name('deleteAnswer');
+//add options
+Route::get('/add-options/{id}', [App\Http\Controllers\AdminController::class, 'addOptions'])->name('addOptions');
+
 
 //modules route
 Route::get('/add-module', [App\Http\Controllers\AdminController::class, 'moduleRole'])->name('moduleRole');
@@ -52,7 +63,14 @@ Route::post('/assign-user-role', [App\Http\Controllers\AdminController::class, '
 Route::get('/delete-user-role/{id}', [App\Http\Controllers\AdminController::class, 'deleteuserRole'])->name('deleteuserRole');
 
 //take exam
+Route::get('/exam-instruction', [App\Http\Controllers\StudentController::class, 'examInstruction'])->name('examInstruction');
 Route::get('/take-exam', [App\Http\Controllers\StudentController::class, 'takeExam'])->name('takeExam');
 Route::post('/take-exam', [App\Http\Controllers\StudentController::class, 'saveExam'])->name('saveExam');
 Route::get('/my-exam', [App\Http\Controllers\StudentController::class, 'myExam'])->name('myExam');
+
+//set time
+Route::get('/set-time', [App\Http\Controllers\SetExamTime::class, 'setTime'])->name('setTime');
+Route::post('/set-time', [App\Http\Controllers\SetExamTime::class, 'saveTime'])->name('saveTime');
+
+
 });

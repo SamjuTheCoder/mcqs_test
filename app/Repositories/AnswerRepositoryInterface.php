@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 
 interface AnswerRepositoryInterface
 {
-   public function all();
+   public function all($id);
 
    public function allQuestion();
 

@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 
 interface QuestionRepositoryInterface
 {
-   public function all(): Collection;
+   public function all($id): Collection;
 
    public function count();
 
