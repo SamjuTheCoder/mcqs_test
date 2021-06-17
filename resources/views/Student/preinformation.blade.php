@@ -6,7 +6,7 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Exam Instruction
+        Exam Subjects
  
       </h1>
       <ol class="breadcrumb">
@@ -44,27 +44,26 @@
         <div class="col-md-12">
           <!-- general form elements -->
           <div class="box box-primary">
+        
             <br>
-            <div class="table-responsive" style="margin-left:20px;margin-right:20px; font-size:19px">
-               
-
-                @if($readme==null)
+            <br>
+            <div class="table-responsive" style="margin-left:20px;margin-right:20px;">
+                
+                <h4>Welcome: {{ Auth::user()->name }}, please select subject below to write your exam.</h4>
                 <div class="card"> 
-                   <h3> Exam will start soon. Check back later</h3>
+                
+                <table> 
+                @foreach($getClass as $subject)
+                    <div class="bg-info">
+                        <a href="proceed/{{base64_encode($subject->sid)}}"><h4 style="width:200px;font-weight:bold"><span class="fa fa-check"></span> {{ $subject->subject}}</h4></a>
+                    </div> 
+                @endforeach
+                </table>
+                
                 </div>
-                @else
-                <div class="card"> 
-                    <h3><strong>{{ $readme->examname }} [<span style="color:blue">{{ $readme->subject }}</span>]</strong></h3>
-                    <h4><strong>Time: </strong> {{ $readme->hour ? $readme->hour.'hrs' : '' }} : {{ $readme->mins ? $readme->mins.'mins' : '' }} <strong>Term:</strong> {{ $readme->term }} <strong>Session: </strong>{{ $readme->session }} <strong>Questions: </strong>{{ $count_question }}</h4>
-                   <div class="instruction">{!! $readme->instruction !!}</div>
-                </div>
-                @endif
-                <form method="get" action="{{ route('takeExam') }}">
-                  @csrf
-                <input type="hidden" class="form-control" id="equestion" name="equestion" value="{{ base64_encode($readme->eid) }}">                
-                <button type="submit" class="btn btn-primary button-style">Start <i class="fa fa-arrow-right"></i></button>
-              </form>
                
+                <input type="hidden" class="form-control" id="question" name="question" value="">
+              
                 <p>&nbsp;</p>
              
                 

@@ -20,6 +20,9 @@ class CreateTakeExamsTable extends Migration
             $table->integer('answerID')->nullable();
             $table->integer('status')->default(0);
             $table->integer('isConfirmed')->default(0);
+            $table->string('picture')->nullable()
+            $table->string('status')->default(0)
+            $table->string('isConfirmed')->default(0)
             $table->timestamps();
         });
     }

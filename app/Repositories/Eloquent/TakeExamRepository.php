@@ -34,7 +34,11 @@ class TakeExamRepository extends BaseRepository implements TakeExamRepositoryInt
 
     public function allExam()
     {
-        return $this->model->leftjoin('users','take_exams.userID','=','users.id')->leftjoin('answers','take_exams.answerID','=','answers.id')->leftjoin('questions','take_exams.questionID','=','questions.id')->get();
+        return $this->model
+        ->leftjoin('users','take_exams.userID','=','users.id')
+        ->leftjoin('answers','take_exams.answerID','=','answers.id')
+        ->leftjoin('questions','take_exams.questionID','=','questions.id')
+        ->get();
     }  
 
     public function count()
@@ -45,5 +49,32 @@ class TakeExamRepository extends BaseRepository implements TakeExamRepositoryInt
     public function deleteAnswer($id)
     {
         return $this->model->find($id)->delete();
+    }
+
+    public function updateStatus(array $data, $id)
+    {
+        return $this->model->where('userID',$id)->update($data);
+    }
+
+    public function previewScore($id)
+    {
+        return $this->model
+        ->where('userID',$id)
+        ->leftjoin('users','take_exams.userID','=','users.id')
+        ->leftjoin('answers','take_exams.answerID','=','answers.id')
+        ->leftjoin('questions','take_exams.questionID','=','questions.id')
+        ->get();
+    }
+
+    public function examTaken($id)
+    {
+        return $this->model
+        ->where('userID',$id)
+        ->where('status',1)
+        ->leftjoin('users','take_exams.userID','=','users.id')
+        ->leftjoin('answers','take_exams.answerID','=','answers.id')
+        ->leftjoin('questions','take_exams.questionID','=','questions.id')
+        ->leftjoin('create_exams','create_exams.id','=','questions.examID')
+        ->exists();
     }
 }

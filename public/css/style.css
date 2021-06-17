@@ -31,7 +31,9 @@ body {
 	font-family: 'Hind', sans-serif;
 } 
 /*-- main --*/ 
-
+.setbackground {
+    background-image: linear-gradient(red, yellow);
+}
 h1 {
 	font-size: 45px;
 	color: #fff;

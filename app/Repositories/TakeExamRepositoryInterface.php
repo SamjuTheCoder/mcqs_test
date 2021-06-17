@@ -13,4 +13,10 @@ interface TakeExamRepositoryInterface
    public function count();
 
    public function deleteAnswer($id);
+
+   public function updateStatus(array $data, $id);
+
+   public function previewScore($id);
+
+   public function examTaken($id);
 }

@@ -15,6 +15,9 @@ class TakeExam extends Model
         'answerID',
         'status',
         'isConfirmed',
+        'picture',
+        'status',
+        'isConfirmed',
         
     ];
 

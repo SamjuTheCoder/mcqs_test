@@ -30,6 +30,10 @@ use App\Repositories\TimeInterface;
 use App\Repositories\Eloquent\TimeRepository; 
 use App\Repositories\Eloquent\CreateExamRepository;
 use App\Repositories\CreateExamInterface;
+use App\Repositories\Eloquent\StudentExamTimeRepository;
+use App\Repositories\StudentExamTimeInterface;
+use App\Repositories\Eloquent\TempQuestionRepository;
+use App\Repositories\TempQuestionInterface;
 
 use Illuminate\Support\ServiceProvider; 
 
@@ -56,6 +60,9 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ClassInterface::class, ClassRepository::class);
         $this->app->bind(TimeInterface::class, TimeRepository::class);
         $this->app->bind(CreateExamInterface::class, CreateExamRepository::class);
+        $this->app->bind(StudentExamTimeInterface::class, StudentExamTimeRepository::class);
+        $this->app->bind(TempQuestionInterface::class, TempQuestionRepository::class);
+        
     }
 
     /**

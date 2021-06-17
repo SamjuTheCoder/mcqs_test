@@ -15,7 +15,8 @@
   <!-- jvectormap -->
   <link rel="stylesheet" href="{{ asset('bower_components/jvectormap/jquery-jvectormap.css') }}">
   <!-- Theme style -->
-  <link rel="stylesheet" href="{{ asset('dist/css/AdminLTE.min.css') }}">
+  <!-- <link rel="stylesheet" href="{{ asset('dist/css/AdminLTE.min.css') }}"> -->
+  <link rel="stylesheet" href="{{ asset('dist/css/AdminLTE.css') }}">
   <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
   <link rel="stylesheet" href="{{ asset('dist/css/skins/_all-skins.min.css') }}">
@@ -41,7 +42,7 @@
 <!-- Logo -->
 <a href="/" class="logo">
   <!-- mini logo for sidebar mini 50x50 pixels -->
-  <span class="logo-mini"><b>A</b>LT</span>
+  <span class="logo-mini"><b>Adm</b></span>
   <!-- logo for regular state and mobile devices -->
   <span class="logo-lg"><b>Admin</b></span>
 </a>
@@ -61,27 +62,7 @@
           <i class="fa fa-envelope-o"></i>
           <span class="label label-success">4</span>
         </a>
-        <ul class="dropdown-menu">
-          <li class="header">You have 4 messages</li>
-          <li>
-            <!-- inner menu: contains the actual data -->
-            <ul class="menu">
-              <li><!-- start message -->
-                <a href="#">
-                  
-                  <h4>
-                    Support Team
-                    <small><i class="fa fa-clock-o"></i> 5 mins</small>
-                  </h4>
-                  <p>Why not buy a new awesome theme?</p>
-                </a>
-              </li>
-              <!-- end message -->
-                          
-            </ul>
-          </li>
-          <li class="footer"><a href="#">See All Messages</a></li>
-        </ul>
+       
       </li>
       <!-- Notifications: style can be found in dropdown.less -->
     
@@ -138,7 +119,7 @@
       <!-- Sidebar user panel -->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="dist/img/user2-160x160x.jpg" class="img-circle" alt="User Image">
+          
         </div>
         <div class="pull-left info">
           <p>{{ Auth::user()->name }}</p>
@@ -146,16 +127,7 @@
         </div>
       </div>
       <!-- search form -->
-      <form action="#" method="get" class="sidebar-form">
-        <div class="input-group">
-          <input type="text" name="q" class="form-control" placeholder="Search...">
-          <span class="input-group-btn">
-                <button type="submit" name="search" id="search-btn" class="btn btn-flat">
-                  <i class="fa fa-search"></i>
-                </button>
-              </span>
-        </div>
-      </form>
+      
       @php
 
       if(Auth::user()->user_type == 1)

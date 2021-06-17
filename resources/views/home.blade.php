@@ -31,7 +31,7 @@
 
             <div class="info-box-content">
               <span class="info-box-text">Questions</span>
-              <span class="info-box-number"><small></small> {{ $count_questions }}  </span>
+              <span class="info-box-number"><small></small>   </span>
             </div>
             <!-- /.info-box-content -->
           </div>
@@ -44,7 +44,7 @@
 
             <div class="info-box-content">
               <span class="info-box-text">Answers</span>
-              <span class="info-box-number"><small></small> {{ $count_answer }}</span>
+              <span class="info-box-number"><small></small> </span>
             </div>
             <!-- /.info-box-content -->
           </div>
@@ -61,7 +61,7 @@
 
             <div class="info-box-content">
               <span class="info-box-text">Users</span>
-              <span class="info-box-number"><small></small>{{ $count_user }} </span>
+              <span class="info-box-number"><small></small> </span>
             </div>
             <!-- /.info-box-content -->
           </div>

@@ -41,7 +41,7 @@ class HomeController extends Controller
     {
         $data['questions'] = '';
         $data['answers'] = '';
-        $data['count_questions'] = $this->questionRepository->count();
+        //$data['count_questions'] = $this->questionRepository->count();
         $data['count_answer'] = $this->answerRepository->count();
         $data['count_user'] = $this->userRepository->count();
 

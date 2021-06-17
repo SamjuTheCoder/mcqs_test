@@ -6,24 +6,20 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Add Questions
+        Pre View
  
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Question</a></li>
-        <li class="active">Add</li>
+        <li><a href="#">Exams</a></li>
+        <li class="active">Take</li>
       </ol>
     </section>
 
     <!-- Main content -->
     <section class="content">
       <div class="row">
-        <!-- left column -->
-        <div class="col-md-12">
-          <!-- general form elements -->
-          <div class="box box-primary">
-          @if(session('success'))
+      @if(session('success'))
                 <div class="alert alert-success alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button>
                 <strong></strong> {{ session('success') }}</div>
@@ -44,62 +40,59 @@
                                 @endforeach
                             </div>
                 @endif
-            <!-- /.box-header -->
-            <!-- form start -->
-            <form role="form" method="post" action="{{ route('saveQuestions') }}">
-                @csrf
-              <div style="margin-left:10px;font-size:20px;"> 
-              Exam Title: <span style="color:blue">{{ $title->examname }}</span>, 
-              Exam Type: <span style="color:blue">{{ $title->type }}</span>, 
-              Exam Session : <span style="color:blue">{{ $title->session }}</span>, 
-              Exam Class: <span style="color:blue">{{ $title->class }}</span><br/>
-              
-              </div>
-              <div class="box-body">
-              
-                <div class="form-group col-md-10">
-                  <label for="exampleInputEmail1">Question</label>
-                  <input type="text" class="form-control" id="exampleInputEmail1" name="question" placeholder="Enter Questions" value="{{ old('question') }}" required>
-                  <input type="hidden" class="form-control" id="exam" name="exam" value="{{ $examID }}">
-                
-                </div>
+        <!-- left column -->
+        <div class="col-md-12">
+          <!-- general form elements -->
+          <div class="box box-primary">
+            <br>
+            <div class="table-responsive" style="margin-left:20px;margin-right:20px; font-size:19px">
+               
 
-                <div class="form-group col-md-2">
-                  <label for="exampleInputEmail1">Mark</label>
-                  <input type="text" class="form-control" id="exampleInputEmail1" name="score" placeholder="Enter Score" value="{{ old('score') }}" >
+               
+                <div class="card"> 
+                   <h3> Result preview</h3>
                 </div>
                 
-              </div>
-              <!-- /.box-body -->
-
-              <div class="box-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
-              </div>
-            </form>
-        <hr>
-            <div class="table-responsive">
-                <table class="table table-bordered">
+                <div class="card"> 
+                <table class="table no-margin">
                   <thead>
                   <tr>
                        <th>SN</th>
                        <th>Questions</th>
-                       <th>Mark</th>
-                       <th>Action</th>
+                       <th>Answer</th>
+                       <th>Score</th>
                   </tr>
                   </thead>
                   <tbody>
-                  @php $i=1;  @endphp
-                  @foreach($questions as $question)
+                  @php 
+                  $i=1; 
+                  $score=0;
+                  @endphp
+                  @foreach($scores as $question)
                   <tr>
-                   <td>{{ $i++ }}</td>
+                    <td>{{ $i++ }}</td>
                     <td>{{ $question->question }}</td>
-                    <td>{{ $question->score }}</td>
-                    <td><a onclick="deleteRecord('{{ base64_encode($question->qid) }}')"><button class="btn btn-danger" title="Delete Record"><i class="fa fa-trash"></i></button></a></td>
+                    <td>{{ $question->answer }} @if($question->correct_answer==null) <i  class="fa fa-remove" style="color:red"></i> @else <i  class="fa fa-check" style="color:green"></i> @endif</td>
+                    <td>@if($question->correct_answer==null) {{ '0'}} @else {{ $question->score }} @php $score+=$question->score @endphp @endif</td>
                   </tr>
                  @endforeach
+                  <tr>
+                  <td><strong>Total Score</strong></td>
+                  <td></td>
+                  <td></td>
+                  <td><strong>{{ $score }}</strong></td>
+                 </tr>
                   </tbody>
                 </table>
+                </div>
+              
+                
+               
+                <p>&nbsp;</p>
+             
+                
               </div>
+            
           </div>
           <!-- /.box -->
             
@@ -126,8 +119,9 @@
 
         if(i==true)
         {
-            document.location = "/delete-questions/"+x;
+            document.location = "/delete-answers/"+x;
         }
     }
 </script>
+
 @endsection

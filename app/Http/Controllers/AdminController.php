@@ -125,7 +125,7 @@ class AdminController extends Controller
         $data['questionx']='';
         //$data['answer']=null;
         $data['question'] = DB::table('questions')->get();
-        $data['answer'] = $this->answerRepository->all();
+        //$data['answer'] = $this->answerRepository->all();
         //dd($data['question']);
         return view('Answers.addAnswers',$data);
     }
@@ -146,6 +146,7 @@ class AdminController extends Controller
     {
         $data['questionx'] = $request->question;
         $data['question'] = DB::table('questions')->get();
+        
 
         if(DB::table('answers')->where('answer',$request->answer)->where('question_id',$request->question)->exists()){
             return back()->with('error_message','Record already exists');
@@ -153,7 +154,8 @@ class AdminController extends Controller
         $data['questions'] = $this->answerRepository->create(['question_id'=>$request->question,'answer'=>$request->answer,'correct_answer'=>$request->correct_answer]);
         }
 
-        $data['answer'] = $this->answerRepository->all();
+        $data['answer'] = $this->answerRepository->all($request->question);
+        $data['questionID']=$request->question;
 
         return view('Answers.addAnswers',$data);
     }

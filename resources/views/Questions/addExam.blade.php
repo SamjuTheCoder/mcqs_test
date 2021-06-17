@@ -118,16 +118,16 @@
                   
                   <select name="quizTimeHour" class="form-control">
                                         <option value="">Select</option>
-                                                                                    <option value="0" selected> 0 Hour(s) </option>
-                                                                                    <option value="1" > 1 Hour(s) </option>
-                                                                                    <option value="2" > 2 Hour(s) </option>
-                                                                                    <option value="3" > 3 Hour(s) </option>
-                                                                                    <option value="4" > 4 Hour(s) </option>
-                                                                                    <option value="5" > 5 Hour(s) </option>
-                                                                                    <option value="6" > 6 Hour(s) </option>
-                                                                                    <option value="7" > 7 Hour(s) </option>
-                                                                                    <option value="8" > 8 Hour(s) </option>
-                                                                                    <option value="9" > 9 Hour(s) </option>
+                                                                                    <option value="00" selected> 0 Hour(s) </option>
+                                                                                    <option value="01" > 1 Hour(s) </option>
+                                                                                    <option value="02" > 2 Hour(s) </option>
+                                                                                    <option value="03" > 3 Hour(s) </option>
+                                                                                    <option value="04" > 4 Hour(s) </option>
+                                                                                    <option value="05" > 5 Hour(s) </option>
+                                                                                    <option value="06" > 6 Hour(s) </option>
+                                                                                    <option value="07" > 7 Hour(s) </option>
+                                                                                    <option value="08" > 8 Hour(s) </option>
+                                                                                    <option value="09" > 9 Hour(s) </option>
                                                                                     <option value="10" > 10 Hour(s) </option>
                                                                                     <option value="11" > 11 Hour(s) </option>
                                                                                     <option value="12" > 12 Hour(s) </option>
@@ -183,16 +183,16 @@
                 <label for="quizTimeMinute">Exam/CA Time (In Minute) <span class="text-danger">*</span></label>
                     <select name="quizTimeMinute" class="form-control" required>
                     <option value="">Select</option>
-                    <option value="0" selected> 0 Minute(s) </option>
-                    <option value="1" > 1 Minute(s) </option>
-                    <option value="2" > 2 Minute(s) </option>
-                    <option value="3" > 3 Minute(s) </option>
-                    <option value="4" > 4 Minute(s) </option>
-                    <option value="5" > 5 Minute(s) </option>
-                    <option value="6" > 6 Minute(s) </option>
-                    <option value="7" > 7 Minute(s) </option>
-                    <option value="8" > 8 Minute(s) </option>
-                    <option value="9" > 9 Minute(s) </option>
+                    <option value="00" selected> 0 Minute(s) </option>
+                    <option value="01" > 1 Minute(s) </option>
+                    <option value="02" > 2 Minute(s) </option>
+                    <option value="03" > 3 Minute(s) </option>
+                    <option value="04" > 4 Minute(s) </option>
+                    <option value="05" > 5 Minute(s) </option>
+                    <option value="06" > 6 Minute(s) </option>
+                    <option value="07" > 7 Minute(s) </option>
+                    <option value="08" > 8 Minute(s) </option>
+                    <option value="09" > 9 Minute(s) </option>
                     <option value="10" > 10 Minute(s) </option>
                     <option value="11" > 11 Minute(s) </option>
                     <option value="12" > 12 Minute(s) </option>
@@ -242,6 +242,9 @@
                     <option value="56" > 56 Minute(s) </option>
                     <option value="57" > 57 Minute(s) </option>
                     <option value="58" > 58 Minute(s) </option>
+                    <option value="59" > 59 Minute(s) </option>
+                    <option value="60" > 60 Minute(s) </option>
+                                        
                     </select>
                 </div>
                 
@@ -287,7 +290,7 @@
                     <td>{{  $exam->session }}</td>
                     <td>{{ $exam->year }}</td>
                     <td>{{ $exam->examname }}</td>
-                    <td>{{ $exam->hour ? $exam->hour.'hrs' : '' }} : {{ $exam->mins ? $exam->mins.'mins' : '' }} </td>
+                    <td>{{ $exam->hour ? $exam->hour.'hrs' : '' }}  {{ $exam->mins ? $exam->mins.'mins' : '' }} </td>
                     <td><a href="add-questions/{{ base64_encode($exam->qid) }}"><button class="btn btn-info" title="Add Questions to Exam"><i class="fa fa-plus"></i></button></a>
                     <a href="view-questions/{{ base64_encode($exam->qid) }}" target="_blank"><button class="btn btn-success" title="View Questions"><i class="fa fa-eye"></i></button></a>
                     

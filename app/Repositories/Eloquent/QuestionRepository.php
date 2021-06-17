@@ -5,7 +5,7 @@ namespace App\Repositories\Eloquent;
 use App\Repositories\QuestionRepositoryInterface;
 use Illuminate\Support\Collection;
 use App\Models\Question;
-
+use DB;
 //use Your Model
 
 /**
@@ -13,6 +13,7 @@ use App\Models\Question;
  */
 class QuestionRepository extends BaseRepository implements QuestionRepositoryInterface
 {
+    protected $tempModel;
     /**
      * @return string
      *  Return the model
@@ -35,23 +36,32 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
         ->get();
     }
 
-    public function singleQuestion()
+    public function singleQuestion($id)
     {
-        return $this->model->limit(1)->inRandomOrder()->get();
+        return $this->model->where('examID',$id)
+        ->inRandomOrder()
+        ->get();
+    }
+    
+    public function nextQuestion($id,$exam)
+    {
+        return $this->model->where('id','>',$id)
+        ->where('examID',$exam)
+        ->limit(1)
+        ->inRandomOrder()
+        ->get();
     }
 
-    public function nextQuestion($id)
+    public function count($id)
     {
-        return $this->model->where('id',$id)->limit(1)->inRandomOrder()->get();
-    }
-
-    public function count()
-    {
-        return $this->model->count();
+        return $this->model->where('examID',$id)->count();
     }
 
     public function deleteQuestion($id)
     {   
         return $this->model->find($id)->delete();
     }
+
+    
+
 }

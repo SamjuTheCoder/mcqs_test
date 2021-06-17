@@ -63,10 +63,13 @@ Route::post('/assign-user-role', [App\Http\Controllers\AdminController::class, '
 Route::get('/delete-user-role/{id}', [App\Http\Controllers\AdminController::class, 'deleteuserRole'])->name('deleteuserRole');
 
 //take exam
-Route::get('/exam-instruction', [App\Http\Controllers\StudentController::class, 'examInstruction'])->name('examInstruction');
+Route::get('/exam-subjects', [App\Http\Controllers\StudentController::class, 'examSubject'])->name('examSubject');
+Route::get('/proceed/{id}', [App\Http\Controllers\StudentController::class, 'examInstruction'])->name('examInstruction');
 Route::get('/take-exam', [App\Http\Controllers\StudentController::class, 'takeExam'])->name('takeExam');
-Route::post('/take-exam', [App\Http\Controllers\StudentController::class, 'saveExam'])->name('saveExam');
-Route::get('/my-exam', [App\Http\Controllers\StudentController::class, 'myExam'])->name('myExam');
+Route::get('/take-examx', [App\Http\Controllers\StudentController::class, 'saveExam'])->name('saveExam');
+Route::post('/update_quiz_time', [App\Http\Controllers\StudentController::class, 'updateTime'])->name('updateTime');
+
+Route::get('/pre-view', [App\Http\Controllers\StudentController::class, 'displayScores'])->name('preView');
 
 //set time
 Route::get('/set-time', [App\Http\Controllers\SetExamTime::class, 'setTime'])->name('setTime');

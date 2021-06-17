@@ -5,17 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Student extends Model
+class StudentExamTime extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'fullname',
-        'registration_number',
-        'sex',
-        'email',
-        'phone',
-        'address',
-        'class',
+        'studentID',
+        'hour',
+        'mins',
+        'questions_count',
+        'stop_current_time',
     ];
 }

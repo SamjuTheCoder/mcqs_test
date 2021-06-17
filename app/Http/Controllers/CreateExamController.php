@@ -117,12 +117,13 @@ class CreateExamController extends Controller
         $data['year'] = $this->yearRepository->all();
         $data['class'] = $this->classRepository->all();
         
-        $time = $request->quizTimeHour.''.$request->quizTimeMinute;
+        $time = $request->quizTimeMinute;
+        
         if(DB::table('create_exams')->where('examtype',$request->examtype)->where('class',$request->class)->where('subject',$request->subject)->where('session',$request->session)->where('term',$request->term)->where('examname',$request->examname)->where('time',$time)->where('instruction',$request->instruction)
         ->exists()){
             return back()->with('error_message','Question already exists');
         }else {
-        $data['exams'] = $this->createexamsRepository->create(['examtype'=>$request->examtype,'class'=>$request->class,'subject'=>$request->subject,'session'=>$request->session,'term'=>$request->term,'year'=>$request->year,'examname'=>$request->exam,'hour'=>$request->quizTimeHour,'mins'=>$request->quizTimeMinute,'time'=>$time,'instruction'=>$request->instruction]);
+        $data['exams'] = $this->createexamsRepository->create(['examtype'=>$request->examtype,'class'=>$request->class,'subject'=>$request->subject,'session'=>$request->session,'term'=>$request->term,'year'=>$request->year,'examname'=>$request->exam,'mins'=>$request->quizTimeMinute,'time'=>$time,'instruction'=>$request->instruction]);
         }
         $data['exams'] = $this->createexamsRepository->all();
         //return back()->with('success','Question addedd successfully!');
