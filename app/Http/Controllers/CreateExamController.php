@@ -67,9 +67,10 @@ class CreateExamController extends Controller
         $data['yearx']='';
         $data['examtypex']='';
         $data['classx']='';
+        $data['questiontypex'] = '';  
 
         $data['exams'] = $this->createexamsRepository->all();
-
+        $data['questiontype'] = $this->questionRepository->questionTypes();
         $data['examtype'] = $this->examtypeRepository->all();
         $data['session'] = $this->sessionRepository->all();
         $data['term'] = $this->semesterRepository->all();
@@ -101,6 +102,7 @@ class CreateExamController extends Controller
             'exam' => 'required|string',
             'subject' => 'required|string',
             'examtype' => 'required',
+            'question_type' => 'required',
            ]);
         
 
@@ -109,8 +111,9 @@ class CreateExamController extends Controller
         $data['yearx']  = $request->year;
         $data['examtypex']  = $request->examtype;
         $data['classx'] =  $request->class;
-
+        $data['questiontypex'] = $request->question_type;  
         
+        $data['questiontype'] = $this->questionRepository->questionTypes();
         $data['examtype'] = $this->examtypeRepository->all();
         $data['session'] = $this->sessionRepository->all();
         $data['term'] = $this->semesterRepository->all();
@@ -118,12 +121,32 @@ class CreateExamController extends Controller
         $data['class'] = $this->classRepository->all();
         
         $time = $request->quizTimeMinute;
-        
-        if(DB::table('create_exams')->where('examtype',$request->examtype)->where('class',$request->class)->where('subject',$request->subject)->where('session',$request->session)->where('term',$request->term)->where('examname',$request->examname)->where('time',$time)->where('instruction',$request->instruction)
+        //dd($request->question_type);
+        if(DB::table('create_exams')
+        ->where('examtype',$request->examtype)
+        ->where('question_type',$request->question_type)
+        ->where('class',$request->class)
+        ->where('subject',$request->subject)
+        ->where('session',$request->session)
+        ->where('term',$request->term)
+        ->where('examname',$request->examname)
+        ->where('time',$time)
         ->exists()){
             return back()->with('error_message','Question already exists');
         }else {
-        $data['exams'] = $this->createexamsRepository->create(['examtype'=>$request->examtype,'class'=>$request->class,'subject'=>$request->subject,'session'=>$request->session,'term'=>$request->term,'year'=>$request->year,'examname'=>$request->exam,'mins'=>$request->quizTimeMinute,'time'=>$time,'instruction'=>$request->instruction]);
+        $data['exams'] = $this->createexamsRepository->create([
+            'examtype'=>$request->examtype,
+            'question_type'=>$request->question_type,
+            'class'=>$request->class,
+            'subject'=>$request->subject,
+            'session'=>$request->session,
+            'term'=>$request->term,
+            'year'=>$request->year,
+            'examname'=>$request->exam,
+            'hour'=>$request->quizTimeHour,
+            'mins'=>$request->quizTimeMinute,
+            'time'=>$time,
+            'instruction'=>$request->instruction]);
         }
         $data['exams'] = $this->createexamsRepository->all();
         //return back()->with('success','Question addedd successfully!');
@@ -132,13 +155,31 @@ class CreateExamController extends Controller
 
     public function deleteExams($id)
     {   
-        //dd($id);
-        if(DB::table('answers')->where('question_id',base64_decode($id))->exists()){
-            return back()->with('error_message','Questions already in used');
-        }else{
-            $data['questions'] = $this->questionRepository->deleteQuestion(base64_decode($id));
+        //dd(base64_decode($id));
+        $data['success'] = $this->createexamsRepository->delete(base64_decode($id));
+        if($data['success']==null)
+        {
+            return back()->with('error_message','Cannot delete, record already in used');
+           
+        } else {
+            return back()->with('success','Exam deleted successfully!');
         }
-            return back()->with('success','Question deleted successfully!');
+    }
+
+    public function activateExam($id)
+    {   
+        //dd($id);
+        $this->createexamsRepository->updateExam(['active_status'=>1], base64_decode($id));
+        
+        return back()->with('success','Exam Activated!');
+    }
+
+    public function deactivateExam($id)
+    {   
+        
+        $this->createexamsRepository->updateExam(['active_status'=>0], base64_decode($id));
+        
+        return back()->with('success','Exam De-Activated!');
     }
     
    

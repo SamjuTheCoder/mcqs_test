@@ -8,15 +8,15 @@ interface StudentExamTimeInterface
 
     public function create(array $data);
 
-    public function update(array $data,$id);
+    public function updateCount(array $data,$id,$examID);
 
-    public function ifexists($id);
+    public function ifexists($examID,$id);
 
-    public function find($id);
+    public function find($examID, $id);
 
-    public function check($id,$h,$m);
+    public function check($examID,$id,$h,$m);
 
     public function delete($id);
 
-    public function updatetime(array $data, $id);
+    public function updateTime(array $data, $id,$examID);
 }

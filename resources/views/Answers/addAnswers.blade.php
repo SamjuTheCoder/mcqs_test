@@ -65,7 +65,7 @@
                 <div class="form-group col-md-12">
                   <label for="exampleInputEmail1">Option</label>
                   <input type="hidden" class="form-control" id="questionID" name="questionID" value="{{ $questionID }}">
-                  <input type="text" class="form-control" id="exampleInputEmail1" name="answer" placeholder="Enter Answer" required>
+                  <textarea class="span11" id="editor" name="answer"  rows="1" required>{{old('answer')}}</textarea>
                  
                   <label>
                     <input type="checkbox" name="correct_answer" value="1"> Is correct answer?
@@ -90,7 +90,6 @@
                   <thead>
                   <tr>
                        <th>SN</th>
-                       <!-- <th>Questions</th> -->
                        <th>Option</th>
                        <th>Action</th>
                   </tr>
@@ -100,7 +99,7 @@
                   @foreach($answer as $ans)
                   <tr>
                    <td>{{ $i++ }}</td>
-                    <td>{{ $ans->answer }} @if($ans->correct_answer==1)<span class="fa fa-check" style="color:red"></span>@else @endif</td>
+                    <td>{{ strip_tags($ans->answer) }} @if($ans->correct_answer==1)<span class="fa fa-check" style="color:red"></span>@else @endif</td>
                     <td><a onclick="deleteRecord('{{ base64_encode($ans->aid) }}')"><button class="btn btn-danger" title="Delete Record"><i class="fa fa-trash"></i></button></a></td>
                   </tr>
                  @endforeach
@@ -129,6 +128,11 @@
 @endsection
 
 @section('script')
+<script src="{{ asset('ckeditor/ckeditor.js') }}"></script>  
+    <script>
+        CKEDITOR.replace( 'editor' );
+    </script>
+
 <script>
     function deleteRecord(x)
     {

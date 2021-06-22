@@ -11,6 +11,7 @@ use App\Repositories\TakeExamRepositoryInterface;
 use App\Repositories\StudentExamTimeInterface;
 use App\Repositories\CreateExamInterface;
 use App\Repositories\TempQuestionInterface;
+use App\Repositories\SubjectsInterface;
 use App\Http\Controllers\SetExamTime;
 use App\Models\TempQuestion;
 use DB;
@@ -26,12 +27,13 @@ class StudentController extends Controller
     private $assignmoduleRepository;
     private $takeexamRepository;
     private $studentexamtime;
-    private $createtime;
-    private $tempquestion;
+    private $createexamsRepository;
+    private $tempQuestion;
+    private $subjectsRepo;
 
    
 
-    public function __construct(TempQuestionInterface $tempquestion, CreateExamInterface $createtime, StudentExamTimeInterface $studentexamtime, TakeExamRepositoryInterface $takeexamRepository, AssignModuleRepositoryInterface $assignmoduleRepository, ModuleRoleRepositoryInterface $moduleroleRepository, QuestionRepositoryInterface $questionRepository,AnswerRepositoryInterface $answerRepository)
+    public function __construct(SubjectsInterface $subjectRepo,TempQuestionInterface $tempQuestion, CreateExamInterface $createexamsRepository, StudentExamTimeInterface $studentexamtime, TakeExamRepositoryInterface $takeexamRepository, AssignModuleRepositoryInterface $assignmoduleRepository, ModuleRoleRepositoryInterface $moduleroleRepository, QuestionRepositoryInterface $questionRepository,AnswerRepositoryInterface $answerRepository)
     {
         $this->middleware('auth');
 
@@ -41,8 +43,9 @@ class StudentController extends Controller
         $this->assignmoduleRepository = $assignmoduleRepository;
         $this->takeexamRepository = $takeexamRepository;
         $this->studentexamtime = $studentexamtime;
-        $this->createtime = $createtime;
-        $this->tempquestion = $tempquestion;
+        $this->createexamsRepository = $createexamsRepository;
+        $this->tempQuestion = $tempQuestion;
+        $this->subjectRepo = $subjectRepo;
 
     }
 
@@ -50,27 +53,38 @@ class StudentController extends Controller
     {
         
         $studentClass = Auth::user()->class;
-        $data['getClass'] = $this->createtime->examSubject($studentClass,1);
-
+        $data['getClass'] = $this->createexamsRepository->examSubject($studentClass,1);
+        $data['examinfo'] = $this->takeexamRepository->examTaken(Auth::user()->class);
+        
         return view('Student.preInformation',$data);
     }
 
     public function examInstruction($id)
     {
-        $data['istrue'] = $this->takeexamRepository->examTaken(Auth::user()->id);
-        dd($data['istrue']);
-        $this->tempquestion->delete(Auth::user()->id);
-
+       
+        $data['title'] = $this->createexamsRepository->gettitle(base64_decode($id));
         $data['question'] = [];
 
         $userID = Auth::user()->studentID;
-        $data['readme'] = $this->createtime->getInstruction(base64_decode($id));
+        $data['readme'] = $this->createexamsRepository->getInstruction(base64_decode($id));
+       
+        if($data['readme']==null)
+        {
+            return back();
+        }
+  
+        Session::put('session',$data['readme']->session);
+        Session::put('class',$data['readme']->class);
+        Session::put('term',$data['readme']->term);
+        Session::put('year',$data['readme']->year);
+        Session::put('subject',$data['readme']->subjectID);
+
         $data['count_question'] = $this->questionRepository->count($data['readme']->eid);
         $data['question'] = $this->questionRepository->singleQuestion($data['readme']->eid);
         
         foreach($data['question'] as $questions)
         {
-            $this->tempquestion->create([
+            $this->tempQuestion->create([
                 'examID'=>$questions->examID,
                 'questionID'=>$questions->id,
                 'studentID'=>Auth::user()->id,
@@ -80,8 +94,11 @@ class StudentController extends Controller
         }
 
         Session::put('count',$data['count_question']);
-        //Session::put('count',$data['count_question']);
-       
+        Session::put('question_type',$data['title']->question_type);
+        Session::put('examID',$questions->examID);
+        
+        $data['exam_status'] = $this->takeexamRepository->isExamSubmitted($data['readme']->eid,Auth::user()->id);
+       // dd($data['readme']->id);
         return view('Student.examInstruction',$data);
     }
 
@@ -89,24 +106,26 @@ class StudentController extends Controller
     {
         $data['count_question'] = Session::get('count');
         $data['count_questionx'] = Session::get('count');
-        //dd( $data['count_question']);
-        $data['time'] = $this->createtime->gettime(base64_decode($request->equestion));
+        $data['question_type'] = Session::get('question_type');
+
+        $data['time'] = $this->createexamsRepository->gettime(base64_decode($request->equestion));
         $data['getQuiz_time']= $data['time']->hour.':'.$data['time']->mins.':00';
 
-        $data['isexists'] = $this->studentexamtime->ifexists(Auth::user()->id);
+        $data['isexists'] = $this->studentexamtime->ifexists(Session::get('examID'),Auth::user()->id);
 
         if($data['isexists']){
 
-            $data['myTime'] = $this->studentexamtime->find(Auth::user()->id);
+            $data['myTime'] = $this->studentexamtime->find(Session::get('examID'),Auth::user()->id);
 
             $data['hour'] = $data['myTime']->hour;
             $data['mins'] = $data['myTime']->mins;
             $data['getQuizTime']= $data['myTime']->stop_current_time;
 
-            $timeExists = $this->studentexamtime->check(Auth::user()->id,$data['hour'],$data['mins']);
+            $timeExists = $this->studentexamtime->check(Session::get('examID'),Auth::user()->id,$data['hour'],$data['mins']);
 
             if(!$timeExists){
                 $this->studentexamtime->create([
+                    'examID'=>Session::get('examID'),
                     'studentID'=>Auth::user()->id,
                     'hour'=>$data['time']->hour,
                     'mins'=>$data['time']->mins,
@@ -118,6 +137,7 @@ class StudentController extends Controller
         else
         {
             $this->studentexamtime->create([
+                'examID'=>Session::get('examID'),
                 'studentID'=>Auth::user()->id,
                 'hour'=>$data['time']->hour, 
                 'mins'=>$data['time']->mins,
@@ -125,36 +145,38 @@ class StudentController extends Controller
                 'stop_current_time'=>$data['getQuiz_time']
             ]);
             
-            $data['myTime'] = $this->studentexamtime->find(Auth::user()->id);
+            $data['myTime'] = $this->studentexamtime->find(Session::get('examID'), Auth::user()->id);
 
             $data['hour'] = $data['myTime']->hour;
             $data['mins'] = $data['myTime']->mins;
             $data['getQuizTime']= $data['myTime']->stop_current_time;
         }
-        $data['exists'] = '';
-        
-        $data['question'] = $this->tempquestion->single(base64_decode($request->equestion));
-        //dd($data['question']);
-        Session::put('exam_id',$request->equestion);
-       
 
+        $data['exists'] = '';
+        $data['question'] = $this->tempQuestion->single(base64_decode($request->equestion));
+        Session::put('exam_id',$request->equestion);
+        
         return view('Student.takeExam',$data);
     }
 
     public function saveExam(Request $request)
     {   
+        
+        $data['getCorrectAnswer']= [];
         $nextButton = $request->input('next');
         $previousButton = $request->input('previous');
         $submitButton = $request->input('submit');
 
         $data['count_questionx'] = Session::get('count');
+        $data['question_type'] = Session::get('question_type');
+        
+        $get_exam_id = Session::get('exam_id');
+        
 
         if($nextButton=='next')
         {
-
+            //dd(base64_decode($request->question));
             $img = $request->image;
-            $folderPath = "upload/";
-            //dd($img);
             $image_parts = explode(";base64,", $img);
             $image_type_aux = explode("image/", $image_parts[0]);
             $image_type = $image_type_aux[1];
@@ -164,45 +186,143 @@ class StudentController extends Controller
         
             file_put_contents(public_path('exam/pictures')."/".$fileName, $image_base64);
 
-            $get_exam_id = Session::get('exam_id');
-            $getCount = $this->studentexamtime->find(Auth::user()->id);
+            $getCount = $this->studentexamtime->find(Session::get('examID'),Auth::user()->id);
             $data['count_question'] =  $getCount->questions_count;
-  
-            $data['exists'] = DB::table('take_exams')
-            ->where('userID',Auth::user()->id)
-            ->where('questionID',base64_decode($request->question))
-            ->exists(); 
+            $data['getCorrectAnswer'] =  $this->takeexamRepository->getAnswersByQuestionID(base64_decode($request->questionID));     
 
-            if($data['exists']) {
-                return back();
-            }else{
-            
-            $this->takeexamRepository->create([
-                'userID'=>Auth::user()->id,
-                'questionID'=>base64_decode($request->questionID),
-                'answerID'=>base64_decode($request->answer),
-                'picture'=>$fileName
-            ]);
-
-            $data['question'] = $this->tempquestion->next(base64_decode($request->question)+1);
-            $this->studentexamtime->update(['questions_count'=>$data['count_question']-1], Auth::user()->id);
+            if($this->takeexamRepository->studentAnswersExists(Auth::user()->id, base64_decode($request->questionID))) {
+                
+                 
+                if($data['question_type']==1) { //subjective question
                     
+                    foreach($data['getCorrectAnswer'] as $answers)
+                    {
+                        if(strstr(strtolower($answers->answer),strtolower($request->answer)))
+                        {
+                            $this->takeexamRepository->updatePreviousButton([
+                                'userID'=>Auth::user()->id,
+                                'examID'=>base64_decode($get_exam_id),
+                                'class'=>Auth::user()->class,
+                                'session'=>Session::get('session'),
+                                'term'=>Session::get('term'),
+                                'year'=>Session::get('year'),
+                                'subject'=>Session::get('subject'),
+                                'questionID'=>base64_decode($request->questionID),
+                                'answerID'=>$answers->id,
+                                'subjective_answer'=>$request->answer,
+                                'picture'=>$fileName
+                            ], base64_decode($request->questionID));
+                        }
+                    }
+                }
+                elseif($data['question_type']==2) { //essay question 
+                    
+                    $this->takeexamRepository->updatePreviousButton([
+                        'userID'=>Auth::user()->id,
+                        'examID'=>base64_decode($get_exam_id),
+                        'class'=>Auth::user()->class,
+                        'session'=>Session::get('session'),
+                        'term'=>Session::get('term'),
+                        'year'=>Session::get('year'),
+                        'subject'=>Session::get('subject'),
+                        'questionID'=>base64_decode($request->questionID),
+                        'answerID'=>$answers->id,
+                        'subjective_answer'=>$request->answer,
+                        'picture'=>$fileName
+                    ], base64_decode($request->questionID));
+                }
+                elseif($data['question_type']==3) { //multiple choice
+                    $this->takeexamRepository->updatePreviousButton([
+                        'userID'=>Auth::user()->id,
+                        'examID'=>base64_decode($get_exam_id),
+                        'class'=>Auth::user()->class,
+                        'session'=>Session::get('session'),
+                        'term'=>Session::get('term'),
+                        'year'=>Session::get('year'),
+                        'subject'=>Session::get('subject'),
+                        'questionID'=>base64_decode($request->questionID),
+                        'answerID'=>$request->id,
+                        'subjective_answer'=>$request->answer,
+                        'picture'=>$fileName
+                    ], base64_decode($request->questionID));
+                }
             }
             
-            $data['myTime'] = $this->studentexamtime->find(Auth::user()->id);
+            $data['update'] = $this->tempQuestion->updateTempQuestion(base64_decode($get_exam_id), Auth::user()->id, base64_decode($request->questionID));
+            
+            if($data['question_type']==1) { //subjective question
+                
+                foreach($data['getCorrectAnswer'] as $answers)
+                {
+                    if(strstr(strtolower($answers->answer),strtolower($request->answer)))
+                    {
+                        $this->takeexamRepository->create([
+                            'userID'=>Auth::user()->id,
+                            'examID'=>base64_decode($get_exam_id),
+                            'class'=>Auth::user()->class,
+                            'session'=>Session::get('session'),
+                            'term'=>Session::get('term'),
+                            'year'=>Session::get('year'),
+                            'subject'=>Session::get('subject'),
+                            'questionID'=>base64_decode($request->questionID),
+                            'answerID'=>$answers->id,
+                            'subjective_answer'=>$request->answer,
+                            'picture'=>$fileName
+                        ]);
+                    }
+                }
+            }
+            elseif($data['question_type']==2) { //essay question 
+                
+                $this->takeexamRepository->create([
+                    'userID'=>Auth::user()->id,
+                    'examID'=>base64_decode($get_exam_id),
+                    'class'=>Auth::user()->class,
+                    'session'=>Session::get('session'),
+                    'term'=>Session::get('term'),
+                    'year'=>Session::get('year'),
+                    'subject'=>Session::get('subject'),
+                    'questionID'=>base64_decode($request->questionID),
+                    //'answerID'=>$answers->id,
+                    'essay_answer'=>$request->answer,
+                    'picture'=>$fileName
+                ]);
+            }
+            elseif($data['question_type']==3) { //multiple choice
+                $this->takeexamRepository->create([
+                    'userID'=>Auth::user()->id,
+                    'examID'=>base64_decode($get_exam_id),
+                    'class'=>Auth::user()->class,
+                    'session'=>Session::get('session'),
+                    'term'=>Session::get('term'),
+                    'year'=>Session::get('year'),
+                    'subject'=>Session::get('subject'),
+                    'questionID'=>base64_decode($request->questionID),
+                    'answerID'=>base64_decode($request->answer),
+                    //'subjective_answer'=>$request->answer,
+                    'picture'=>$fileName
+                ]);
+            }
+
+            $data['question'] = $this->tempQuestion->next(base64_decode($request->question));
+            $this->studentexamtime->updateCount(['questions_count'=>$data['count_question']-1], Session::get('examID'), Auth::user()->id);
+                    
+            $data['myTime'] = $this->studentexamtime->find(Session::get('examID'),Auth::user()->id);
 
             $data['hour'] = $data['myTime']->hour;
             $data['mins'] = $data['myTime']->mins;
             $data['getQuizTime']= $data['myTime']->stop_current_time;
+
+            //$this->tempQuestion->delete(base64_decode($get_exam_id),Auth::user()->id);
         }
         elseif($previousButton=='previous')
         {
-
+            //dd(base64_decode($request->question));
             $get_exam_id = Session::get('exam_id');
             $getCount = $this->studentexamtime->find(Auth::user()->id);
             $data['count_question'] =  $getCount->questions_count;
 
-            $data['question'] = $this->tempquestion->previous(base64_decode($request->question)-1);
+            $data['question'] = $this->tempQuestion->previous(base64_decode($request->question));
             $data['myTime'] = $this->studentexamtime->find(Auth::user()->id);
 
             $data['hour'] = $data['myTime']->hour;
@@ -213,8 +333,6 @@ class StudentController extends Controller
         elseif($submitButton=='Submit')
         {
             $img = $request->image;
-            $folderPath = "upload/";
-            //dd($img);
             $image_parts = explode(";base64,", $img);
             $image_type_aux = explode("image/", $image_parts[0]);
             $image_type = $image_type_aux[1];
@@ -225,31 +343,78 @@ class StudentController extends Controller
             file_put_contents(public_path('exam/pictures')."/".$fileName, $image_base64);
 
             $get_exam_id = Session::get('exam_id');
-            $getCount = $this->studentexamtime->find(Auth::user()->id);
+            $getCount = $this->studentexamtime->find(Session::get('examID'), Auth::user()->id);
             $data['count_question'] =  $getCount->questions_count;
-
-            $data['exists'] = DB::table('take_exams')
-            ->where('userID',Auth::user()->id)
-            ->where('questionID',base64_decode($request->question))
-            ->exists(); 
-
-            if($data['exists']) {
+            
+            if($this->takeexamRepository->studentAnswersExists(Auth::user()->id, base64_decode($request->questionID))) {
                 return back();
-            }else{
-                
-            //insert student answers
-            $this->takeexamRepository->create([
-                'userID'=>Auth::user()->id, 
-                'questionID'=>base64_decode($request->questionID), 
-                'answerID'=>base64_decode($request->answer),
-                'picture'=>$fileName
-            ]);
-            
-            $this->takeexamRepository->updateStatus(['status'=>1], Auth::user()->id); //update status after submit
-            
-            $this->studentexamtime->update(['questions_count'=>$data['count_question']-1], Auth::user()->id); //update question counter
-            $this->tempquestion->delete(Auth::user()->id); //delete record from temp questions        
             }
+            $data['getCorrectAnswer'] =  $this->takeexamRepository->getAnswersByQuestionID(base64_decode($request->questionID));          
+
+            if($data['question_type']==1) { //subjective question
+                
+                foreach($data['getCorrectAnswer'] as $answers)
+                {
+                    if(strstr(strtolower($answers->answer),strtolower($request->answer)))
+                    {
+                        $this->takeexamRepository->create([
+                            'userID'=>Auth::user()->id,
+                            'examID'=>base64_decode($get_exam_id),
+                            'class'=>Auth::user()->class,
+                            'session'=>Session::get('session'),
+                            'term'=>Session::get('term'),
+                            'year'=>Session::get('year'),
+                            'subject'=>Session::get('subject'),
+                            'questionID'=>base64_decode($request->questionID),
+                            'answerID'=>$answers->id,
+                            'subjective_answer'=>$request->answer,
+                            'picture'=>$fileName
+                        ]);
+                    }
+                }
+            }
+            elseif($data['question_type']==2) { //essay question 
+                
+                $this->takeexamRepository->create([
+                    'userID'=>Auth::user()->id,
+                    'examID'=>base64_decode($get_exam_id),
+                    'class'=>Auth::user()->class,
+                    'session'=>Session::get('session'),
+                    'term'=>Session::get('term'),
+                    'year'=>Session::get('year'),
+                    'subject'=>Session::get('subject'),
+                    'questionID'=>base64_decode($request->questionID),
+                    //'answerID'=>$answers->id,
+                    'essay_answer'=>$request->answer,
+                    'picture'=>$fileName
+                ]);
+            }
+            elseif($data['question_type']==3) { //multiple choice
+                $this->takeexamRepository->create([
+                    'userID'=>Auth::user()->id,
+                    'examID'=>base64_decode($get_exam_id),
+                    'class'=>Auth::user()->class,
+                    'session'=>Session::get('session'),
+                    'term'=>Session::get('term'),
+                    'year'=>Session::get('year'),
+                    'subject'=>Session::get('subject'),
+                    'questionID'=>base64_decode($request->questionID),
+                    'answerID'=>$request->answer,
+                    //'subjective_answer'=>$request->answer,
+                    'picture'=>$fileName
+                ]);
+            }
+
+            $this->studentexamtime->update(['questions_count'=>$data['count_question']-1], Auth::user()->id);
+            $data['myTime'] = $this->studentexamtime->find(Session::get('examID'),Auth::user()->id);
+
+            $data['hour'] = $data['myTime']->hour;
+            $data['mins'] = $data['myTime']->mins;
+            $data['getQuizTime']= $data['myTime']->stop_current_time;
+            $this->tempQuestion->delete(base64_decode($get_exam_id),Auth::user()->id); //delete record from temp questions    
+            //$this->tempQuestion->deleteStudentTime(base64_decode($get_exam_id),Auth::user()->id); //delete record from student time       
+            $this->takeexamRepository->updateStatus(base64_decode($get_exam_id),Auth::user()->id); //update status   
+            
 
             return redirect()->route('preView');
             
@@ -262,18 +427,38 @@ class StudentController extends Controller
     //constantly updating exam time using ajax
     public function updateTime(Request $request)
     {
-        $this->studentexamtime->update([
+        $this->studentexamtime->updateTime([
             'stop_current_time'=>$request->getTime
-        ], Auth::user()->id); 
+        ], Auth::user()->id, Session::get('examID')); 
     }
 
     public function displayScores()
     {
-        $data['scores'] = $this->takeexamRepository->previewScore(Auth::user()->id);
+        $data['current_subject'] = null;
+        $data['scores'] = $this->takeexamRepository->previewScore(base64_decode(Session::get('exam_id')),Auth::user()->id);
 
         return view('Student.preview',$data);
     }
 
+    public function pastExams()
+    {
+        $studentClass = Auth::user()->class;
+        
+        $data['examinfo'] = $this->takeexamRepository->pastpapers($studentClass, Auth::user()->id);
+        
+
+       //dd($data['examinfo']);
+        return view('Student.pastExams',$data);
+    }
+
+    public function viewpastExams($session,$subject,$term,$type,$class)
+    {
+       // dd($subject);
+        $data['current_subject'] = $this->subjectRepo->getsubject($subject);
+        $data['scores'] = $this->takeexamRepository->viewpastpapers(Auth::user()->id,$session,$subject,$term,$type,$class);
+
+        return view('Student.preview',$data);
+    }
 
     
 }

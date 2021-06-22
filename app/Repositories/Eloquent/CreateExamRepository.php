@@ -28,14 +28,15 @@ class CreateExamRepository extends BaseRepository implements CreateExamInterface
     /**
      * @return Collection
      */
-    public function all(): collection
+    public function all()
     {
         return $this->model
         ->leftjoin('exam_types','create_exams.examtype','=','exam_types.id')
         ->leftjoin('student_classes','create_exams.class','=','student_classes.id')
         ->leftjoin('subjects','create_exams.subject','=','subjects.id')
+        ->leftjoin('question_types','create_exams.question_type','=','question_types.id')
         ->select('*','create_exams.id as qid')
-        ->get();
+        ->paginate(5);
     }
 
     public function gettime($id)
@@ -51,7 +52,14 @@ class CreateExamRepository extends BaseRepository implements CreateExamInterface
 
     public function delete($id)
     {   
-        return $this->model->find($id)->delete();
+        if(DB::table('questions')->where('examID',$id)->exists())
+        {
+            return null;
+
+        }else {
+
+            return $this->model->find($id)->delete();
+        }
     }
 
     public function examSubject($class,$active_status)
@@ -61,7 +69,18 @@ class CreateExamRepository extends BaseRepository implements CreateExamInterface
         ->leftjoin('subjects','create_exams.subject','=','subjects.id')
         ->where('create_exams.class',$class)
         ->where('create_exams.active_status',$active_status)
-        ->select('*','create_exams.id as sid')
+        ->select('*','create_exams.id as sid','subjects.id as subjectID')
+        ->get();
+    }
+
+    public function getexamSubject($class)
+    {      
+        return $this->model
+        ->where('create_exams.class',$class)
+        ->where('create_exams.active_status',0)
+        ->leftjoin('student_classes','create_exams.class','=','student_classes.id')
+        ->leftjoin('subjects','create_exams.subject','=','subjects.id')
+        ->select('*','create_exams.id as sid','subjects.id as subjectID', 'create_exams.subject as subject')
         ->get();
     }
 
@@ -69,18 +88,15 @@ class CreateExamRepository extends BaseRepository implements CreateExamInterface
     {
         $getClass = Auth::user()->class;
         $currentSession = DB::table('exam_times')->first();
-       
-        $istrue = DB::table('create_exams')
+       // dd($getClass);
+        if(DB::table('create_exams')
         ->where('session',$currentSession->session)
         ->where('term',$currentSession->term)
         ->where('year',$currentSession->year)
         ->where('class',$getClass)
-        ->where('subject',$id)
         ->where('active_status',1)
-        ->exists();
-
-        if($istrue)
-        {
+        ->exists()){
+            
             return $this->model
             ->where('session',$currentSession->session)
             ->where('term',$currentSession->term)
@@ -89,7 +105,7 @@ class CreateExamRepository extends BaseRepository implements CreateExamInterface
             ->where('create_exams.subject',$id)
             ->where('active_status',1)
             ->leftjoin('subjects','create_exams.subject','=','subjects.id')
-            ->select('*','create_exams.id as eid')
+            ->select('*','create_exams.id as eid','subjects.id as subjectID')
             ->first();
         }
         else
@@ -97,4 +113,48 @@ class CreateExamRepository extends BaseRepository implements CreateExamInterface
             return null;
         }
     }
+
+    public function updateExam(array $data, $id)
+    {
+        return $this->model
+            ->where('id',$id)
+            ->update($data);
+    }
+
+    public function gettitle($id)
+    {
+        return $this->model
+        ->where('create_exams.subject',$id)
+        ->leftjoin('exam_types','create_exams.examtype','=','exam_types.id')
+        ->leftjoin('student_classes','create_exams.class','=','student_classes.id')
+        ->leftjoin('subjects','create_exams.subject','=','subjects.id')
+        ->leftjoin('question_types','create_exams.question_type','=','question_types.id')
+        ->first();
+    }
+
+    public function getExamTitle($id)
+    {
+        return $this->model
+        ->where('create_exams.id',$id)
+        ->leftjoin('exam_types','create_exams.examtype','=','exam_types.id')
+        ->leftjoin('student_classes','create_exams.class','=','student_classes.id')
+        ->leftjoin('subjects','create_exams.subject','=','subjects.id')
+        ->leftjoin('question_types','create_exams.question_type','=','question_types.id')
+        ->first();
+    }
+
+    public function checkIfExamRecordExists($examtype,$question_type,$class,$subject,$session,$term,$year,$examname,$time)
+    {
+        return $this->model
+        ->where('examtype',$examtype)
+        ->where('question_type',$question_type)
+        ->where('class',$class)
+        ->where('subject',$subject)
+        ->where('session',$session)
+        ->where('term',$term)
+        ->where('year',$year)
+        ->where('examname',$examname)
+        ->where('time',$time)
+        ->exists();
+    } 
 }

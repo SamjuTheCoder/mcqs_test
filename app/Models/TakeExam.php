@@ -11,8 +11,16 @@ class TakeExam extends Model
 
     protected $fillable = [
         'userID',
+        'examID',
+        'class',
+        'session',
+        'term',
+        'year',
+        'subject',
         'questionID',
         'answerID',
+        'subjective_answer',
+        'essay_answer',
         'status',
         'isConfirmed',
         'picture',

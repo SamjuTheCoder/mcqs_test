@@ -48,7 +48,8 @@ class LoginController extends Controller
         $this->validate($request,
         [
             'username'      => 'required|min:3',
-            'password'      => 'required|min:5'
+            'password'      => 'required|min:5',
+            //'g-recaptcha-response' => 'required|recaptcha'
         ],['username'       => 'Email/Username']);
         
        // $rolePermissionController = new RolePermissionController;

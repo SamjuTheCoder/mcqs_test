@@ -15,6 +15,7 @@ class CreateStudentExamTimesTable extends Migration
     {
         Schema::create('student_exam_times', function (Blueprint $table) {
             $table->id();
+            $table->integer('examID');
             $table->integer('studentID');
             $table->integer('hour');
             $table->integer('mins');

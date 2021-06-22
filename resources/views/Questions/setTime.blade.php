@@ -10,7 +10,7 @@
  
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="#">Exam Time</a></li>
         <li class="active">Set</li>
       </ol>
@@ -95,7 +95,7 @@
                        <th>Session</th>
                        <th>Term</th>
                        <th>Year</th>
-                       <th>Action</th>
+                       <!-- <th>Action</th> -->
                   </tr>
                   </thead>
                   <tbody>
@@ -106,8 +106,8 @@
                     <td>{{  $time->session }}</td>
                     <td>{{  $time->term }}</td>
                     <td>{{  $time->year }}</td>
-                    <td><a onclick="deleteRecord('{{ base64_encode($time->qid) }}')"><button class="btn btn-info"><i class="fa fa-trash"></i></button></a></td>
-                  </tr>
+                    <!-- <td><a onclick="deleteRecord('{{ base64_encode($time->qid) }}')"><button class="btn btn-info"><i class="fa fa-trash"></i></button></a></td>-->
+                  </tr> 
                   @endforeach
                   </tbody>
                 </table>

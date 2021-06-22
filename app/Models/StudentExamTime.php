@@ -10,6 +10,7 @@ class StudentExamTime extends Model
     use HasFactory;
 
     protected $fillable = [
+        'examID',
         'studentID',
         'hour',
         'mins',

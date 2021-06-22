@@ -10,7 +10,9 @@ interface TempQuestionInterface
    public function single($id);
    public function next($id);
    public function previous($id);
-   public function delete($id);
+   public function delete($examID,$studenID);
+   public function updateTempQuestion($examID, $studentID, $id);
+   public function deleteStudentTime($examID,$studenID);
 
 
 }

@@ -3,7 +3,7 @@
 @section('content')
 <!-- main -->
 <div class="login-box">
-  <div class="login-logo">
+  <div class="login-logo" style="color:#ccc;">
     MCQS TEST PORTAL
   </div>
   <!-- /.login-logo -->
@@ -53,18 +53,13 @@
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
       <div class="row">
-        <div class="col-xs-8">
-          <div class="checkbox icheck">
-          <input  type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                
-                <label for="remember">
-                    {{ __('Remember Me') }}
-                </label>
-          </div>
+        <div class="col-xs-12">
+        <div class="g-recaptcha" data-sitekey="6LdNST8bAAAAAGsqDA7ku4_EiuSWRloKvDbyD5bx"></div>
+      <br/>
         </div>
         <!-- /.col -->
-        <div class="col-xs-4">
-          <button type="submit" class="btn btn-danger btn-block btn-flat">Sign In</button>
+        <div class="col-xs-12">
+          <button type="submit" class="btn btn-danger btn-block">Sign In</button>
         </div>
         <!-- /.col -->
       </div>
@@ -72,11 +67,11 @@
     <!-- /.social-auth-links -->
 
     @if (Route::has('password.request'))
+    <br>
         <a  href="{{ route('password.request') }}">
             {{ __('Forgot Your Password?') }}
         </a>
     @endif<br>
-    <a href="{{ url('/register') }}" class="text-center">Register</a>
 
   </div>
   <!-- /.login-box-body -->
@@ -89,6 +84,5 @@
 @stop
 
 @section('style')
-
 
 @stop

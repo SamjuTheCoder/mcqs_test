@@ -10,7 +10,7 @@
  
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="#">Question</a></li>
         <li class="active">Add</li>
       </ol>
@@ -59,9 +59,9 @@
               
                 <div class="form-group col-md-10">
                   <label for="exampleInputEmail1">Question</label>
-                  <input type="text" class="form-control" id="exampleInputEmail1" name="question" placeholder="Enter Questions" value="{{ old('question') }}" required>
+                  <textarea class="form-control" rows="3" id="exampleInputEmail1" name="question" placeholder="Enter Questions" required >{{ old('question') }}</textarea>
                   <input type="hidden" class="form-control" id="exam" name="exam" value="{{ $examID }}">
-                
+                  
                 </div>
 
                 <div class="form-group col-md-2">
@@ -98,8 +98,12 @@
                   </tr>
                  @endforeach
                   </tbody>
+                  <h5 style="margin-left:10px"><a href="{{ route('viewExams') }}"><i class="fa fa-arrow-left"></i> Back </a></h5>
+             
                 </table>
-              </div>
+                {{ $questions->links() }}
+                </div>
+              
           </div>
           <!-- /.box -->
             

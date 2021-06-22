@@ -10,7 +10,7 @@
  
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="#">Exams</a></li>
         <li class="active">Take</li>
       </ol>
@@ -41,37 +41,42 @@
                             </div>
                 @endif
         <!-- left column -->
+        @php  $count = DB::table('student_exam_times')->where('examID',Session::get('examID'))->where('studentID',Auth::user()->id)->first();  @endphp
         <div class="col-md-12">
           <!-- general form elements -->
           <div class="box box-primary">
-          <h3 class="time" style="margin-left:30px;">
-           <b id="quizTimeCounter"><span id="getNewTime">{{ isset($getQuizTime) ? $getQuizTime : "00:15:00" }}</span></b>
-          </h3>
+          <div class="pull-left">
+            <h3 class="time" style="margin-left:30px;font-size:18px">
+            <b id="quizTimeCounter" class="badge"><span id="getNewTime" >{{ isset($getQuizTime) ? $getQuizTime : "00:15:00" }}</span></b>
+            </h3>
+          </div>
+
+          <div class="pull-right">
+            <h3 class="time" style="margin-right:30px;font-size:18px">
+            <center><span class="badge">{{ $count->questions_count }} Questions</span>  </center>
+            </h3>
+          </div>
             <br>
             
             <div class="table-responsive" style="margin-left:20px;margin-right:20px;">
               <div class="row col-md-12">
-                <div class="row">
-                  <center>
-              
-                  </center>
-                </div>
+                
               <div class="col-md-12">
                 <table class="table table-responsive" style="font-size: 26px; border-style:none; background:#000;">
                 <form method="get" action="{{ route('saveExam') }}">
                 @csrf
 
-                @foreach($question as $q)
-                <input type="hidden" class="form-control" id="question" name="question" value="{{ base64_encode($q->id) }}">
-                <input type="hidden" class="form-control" id="questionID" name="questionID" value="{{ base64_encode($q->questionID) }}">
-                <!-- <input type="text" class="form-control" id="mydata" name="mydata" value=""> -->
                 
+                <input type="hidden" class="form-control" id="question" name="question" value="{{ base64_encode($question->id) }}">
+                <input type="hidden" class="form-control" id="questionID" name="questionID" value="{{ base64_encode($question->questionID) }}">
+                <!-- <input type="text" class="form-control" id="mydata" name="mydata" value=""> -->
+               
                 <tr>
                      <td class="bg-info">
-                      <h3 style="font-size:30px">{{ $q->question }}<h3>
+                      <h3 style="font-size:26px"><strong>{{ $question->question }}</strong><h3>
                     </td>
 
-                    <td  rowspan="5" valign="middle" width="150"> 
+                    <td  rowspan="5" valign="middle" width="150" class="bg-info"> 
                       <br>
                       <div class="uservideo"> 
                       <div id="my_camera"></div>
@@ -82,30 +87,39 @@
                    </td>
 
                 </tr>
-                  @php  
-                    $answers = DB::table('answers')->where('question_id',$q->questionID)->get();
-                    $i=0;
-                  @endphp
-                    @foreach($answers as $ans)
-                    @php $i++;   @endphp
-                    <tr class="bg-success">
-                        <td> Option <?php if($i==1){echo 'A';} elseif($i==2){echo 'B';} elseif($i==3){echo 'C';} elseif($i==4){echo 'D';} elseif($i==5){echo 'E';}?> <input type="radio" class="form-check-input" value="{{ base64_encode($ans->id) }}" name="answer"> {{ $ans->answer }}</td>
-                    </tr>
-                    @endforeach
+                @if($question_type==1)
+                        <tr class="bg-success">
+                            <td> <textarea class="form-control" rows="3" id="exampleInputEmail1" name="answer" placeholder="Enter Answer"  ></textarea></td>
+                        </tr>
+                @elseif($question_type==2)
+                        <tr class="bg-success">
+                            <td> <textarea class="form-control" rows="3" id="exampleInputEmail1" name="answer" placeholder="Enter Answer"  ></textarea></td>
+                        </tr>
+                @elseif($question_type==3)
+                          @php  
+                            $answers = DB::table('answers')->where('question_id',$question->questionID)->get();
+                            $i=0;
+                          @endphp
+                            @foreach($answers as $ans)
+                            @php $i++;   @endphp
+                            <tr class="bg-success">
+                                <td> <strong>Option <?php if($i==1){echo 'A';} elseif($i==2){echo 'B';} elseif($i==3){echo 'C';} elseif($i==4){echo 'D';} elseif($i==5){echo 'E';}?> <input type="radio" class="form-check-input" value="{{ base64_encode($ans->id) }}" name="answer"></strong> {{ strip_tags($ans->answer) }}</td>
+                            </tr>
+                            @endforeach
+                @endif
                 
-               
                 </table>
-                @if($count_question==$count_questionx)
+                @if($count->questions_count==$count_questionx)
                   <button type="submit" value="next" name="next" class="btn btn-info buttonstyle" onClick="take_snapshot()">Next <i class="fa fa-arrow-right"></i></button>
-                @elseif(($count_question<$count_questionx)&&($count_question>2))
+                @elseif(($count->questions_count<$count_questionx)&&($count->questions_count>=2))
                   <button type="submit" value="previous" name="previous" class="btn btn-info buttonstyle" onClick="take_snapshot()"><i class="fa fa-arrow-left"></i> Previous </button>
                   <button type="submit" value="next" name="next" class="btn btn-info buttonstyle" onClick="take_snapshot()">Next <i class="fa fa-arrow-right"></i></button>
-                @elseif($count_question<=2)
+                @elseif($count->questions_count==1)
                   <button type="submit" value="Submit" name="submit" class="btn btn-success buttonstyle" onClick="take_snapshot()">Submit <i class="fa fa-send-o"></i></button>
                 @endif
                </form>
                 <p>&nbsp;</p>
-                @endforeach
+                
                 </div>
                 
               </div>  
@@ -131,17 +145,14 @@
 @section('styles')
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
     <style type="text/css">
-        #results { padding:20px; border:1px solid; background:#ccc; }
-        #my_camera {
-          border-radius: 10px;
-          
-        }
+        
     </style>
 @endsection
 
 @section('script')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.min.js"></script>
+
 <script language="JavaScript">
     Webcam.set({
         width: 250,
@@ -156,11 +167,7 @@
         Webcam.snap( function(data_uri) {
             $(".image-tag").val(data_uri);
             document.getElementById('results').innerHTML = '<img src="'+data_uri+'"/>';
-            
-            
-            //var file = document.getElementById('image').value;
-            
-            //document.getElementById('mydata').value = dataURLtoFile(file, 'picture.png');
+           
         } );
     }
 

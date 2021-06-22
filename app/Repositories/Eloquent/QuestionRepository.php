@@ -27,18 +27,19 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
     /**
      * @return Collection
      */
-    public function all($id): collection
+    public function all($id)
     {
         return $this->model
         ->where('questions.examID',$id)
         ->leftjoin('create_exams','questions.examID','=','create_exams.id')
         ->select('*','questions.id as qid')
-        ->get();
+        ->paginate(10);
     }
 
     public function singleQuestion($id)
     {
-        return $this->model->where('examID',$id)
+        return $this->model
+        ->where('examID',$id)
         ->inRandomOrder()
         ->get();
     }
@@ -62,6 +63,16 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
         return $this->model->find($id)->delete();
     }
 
-    
+    public function questionTypes()
+    {
+        return DB::table('question_types')->get();
+    }
+
+    public function questionexists($id)
+    {
+        return $this->model
+        ->where('question',$id)
+        ->exists();
+    }
 
 }

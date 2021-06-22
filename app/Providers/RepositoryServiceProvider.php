@@ -17,7 +17,6 @@ use App\Repositories\TakeExamRepositoryInterface;
 use App\Repositories\Eloquent\TakeExamRepository; 
 use App\Repositories\ExamtypeRepositoryInterface; 
 use App\Repositories\Eloquent\ExamtypeRepository; 
-
 use App\Repositories\SemesterInterface; 
 use App\Repositories\Eloquent\SemesterRepository; 
 use App\Repositories\AcademicSessionInterface; 
@@ -34,6 +33,8 @@ use App\Repositories\Eloquent\StudentExamTimeRepository;
 use App\Repositories\StudentExamTimeInterface;
 use App\Repositories\Eloquent\TempQuestionRepository;
 use App\Repositories\TempQuestionInterface;
+use App\Repositories\Eloquent\SubjectsRepository;
+use App\Repositories\SubjectsInterface;
 
 use Illuminate\Support\ServiceProvider; 
 
@@ -62,6 +63,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(CreateExamInterface::class, CreateExamRepository::class);
         $this->app->bind(StudentExamTimeInterface::class, StudentExamTimeRepository::class);
         $this->app->bind(TempQuestionInterface::class, TempQuestionRepository::class);
+        $this->app->bind(SubjectsInterface::class, SubjectsRepository::class);
         
     }
 

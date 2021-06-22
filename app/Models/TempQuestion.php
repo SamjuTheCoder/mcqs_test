@@ -15,6 +15,7 @@ class TempQuestion extends Model
         'studentID',
         'question',
         'score',
+        'isAnswered',
     ];
 
 }

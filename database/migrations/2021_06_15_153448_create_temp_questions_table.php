@@ -20,6 +20,7 @@ class CreateTempQuestionsTable extends Migration
             $table->integer('studentID');
             $table->string('question');
             $table->integer('score')->nullable();
+            $table->integer('isAnswered')->default(0);
             $table->timestamps();
         });
     }

@@ -10,7 +10,7 @@
  
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="#">Exams</a></li>
         <li class="active">Take</li>
       </ol>
@@ -47,6 +47,7 @@
             <br>
             <div class="table-responsive" style="margin-left:20px;margin-right:20px; font-size:19px">
                
+            @if($exam_status==null)
 
                 @if($readme==null)
                 <div class="card"> 
@@ -55,15 +56,26 @@
                 @else
                 <div class="card"> 
                     <h3><strong>{{ $readme->examname }} [<span style="color:blue">{{ $readme->subject }}</span>]</strong></h3>
-                    <h4><strong>Time: </strong> {{ $readme->hour ? $readme->hour.'hrs' : '' }} : {{ $readme->mins ? $readme->mins.'mins' : '' }} <strong>Term:</strong> {{ $readme->term }} <strong>Session: </strong>{{ $readme->session }} <strong>Questions: </strong>{{ $count_question }}</h4>
+                    <h4><strong>Time: </strong> {{ $readme->hour ? $readme->hour.'hrs' : '' }} : {{ $readme->mins ? $readme->mins.'mins' : '' }} <strong>Term:</strong> {{ $readme->term }} <strong>Session: </strong>{{ $readme->session }} <strong>No. of Questions: </strong>{{ $count_question }} <strong>Questions Type: </strong>{{ $title->questionType }}</h4>
                    <div class="instruction">{!! $readme->instruction !!}</div>
                 </div>
                 @endif
+                @php  $count = DB::table('student_exam_times')->where('studentID',Auth::user()->id)->first();  @endphp
+              
                 <form method="get" action="{{ route('takeExam') }}">
                   @csrf
                 <input type="hidden" class="form-control" id="equestion" name="equestion" value="{{ base64_encode($readme->eid) }}">                
+               
                 <button type="submit" class="btn btn-primary button-style">Start <i class="fa fa-arrow-right"></i></button>
-              </form>
+                </form>
+            @else
+            <div class="card"> 
+                    <h3><strong>{{ $readme->examname }} [<span style="color:blue">{{ $readme->subject }}</span>]</strong></h3>
+                    <h4><strong>Time: </strong> {{ $readme->hour ? $readme->hour.'hrs' : '' }} : {{ $readme->mins ? $readme->mins.'mins' : '' }} <strong>Term:</strong> {{ $readme->term }} <strong>Session: </strong>{{ $readme->session }} <strong>No. of Questions: </strong>{{ $count_question }} <strong>Questions Type: </strong>{{ $title->questionType }}</h4>
+                   <div class="instruction">Exam has already been taken!</div>
+                </div>
+            @endif
+              
                
                 <p>&nbsp;</p>
              
@@ -89,87 +101,5 @@
 @endsection
 
 @section('script')
-<script>
-    function deleteRecord(x)
-    {
-        var i = confirm('Do you eally want to delete?');
 
-        if(i==true)
-        {
-            document.location = "/delete-answers/"+x;
-        }
-    }
-</script>
-
-<!-- <script>
-
-    $(document).ready(function () {
-          $('select').selectize({
-              sortField: 'text'
-          });
-      });
-
-</script>
-
-<script>
-  function startTimer(duration, display) {
-    var timer = duration, minutes, seconds;
-    setInterval(function () {
-        minutes = parseInt(timer / 60, 10);
-        seconds = parseInt(timer % 60, 10);
-
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-
-        display.textContent = minutes + ":" + seconds;
-
-        if (--timer < 0) {
-            timer = duration;
-        }
-    }, 1000);
-}
-
-window.onload = function () {
-    var fiveMinutes = 60 * 60,
-        display = document.querySelector('#time');
-    startTimer(fiveMinutes, display);
-};
-</script> -->
-
-<script>
- //defining timer for donor 1 appearing on receiver dashboard
-
-// Set the date we're counting down to
-var countDownDate = new Date("<?php echo '7-6-2021 16:10' ?>").getTime();
-// var countDownDate = new Date("").getTime();
-
-// Update the count down every 1 second
-var x = setInterval(function() {
-
-    // Get todays date and time
-    var now = new Date().getTime();
-    
-    // Find the distance between now an the count down date
-    var distance = countDownDate - now;
-    
-    // Time calculations for days, hours, minutes and seconds
-    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-    
-    // Output the result in an element with id="demo"
-    document.getElementById("time").innerHTML =  hours + "h "
-    + minutes + "m " + seconds + "s ";
-    
-    // If the count down is over, write some text 
-    if (distance < 0) {
-        location.href = "elapse.php?email=";
-        clearInterval(x);
-        document.getElementById("time").innerHTML = "EXPIRED";
-    }
-}, 1000);
-
-
-</script>
 @endsection

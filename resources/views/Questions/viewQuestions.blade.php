@@ -10,7 +10,7 @@
  
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="#">Question</a></li>
         <li class="active">Add</li>
       </ol>
@@ -77,13 +77,22 @@
                     <td>{{ $question->question }} [<span style="color:green;font-weight:bold"> {{ $question->score }} marks</span>]</td>
                     <td><span class="badge">{{ $options_count}}</span></td>
                     <td>
+                    @if($question_type==2)
+                    @else  
                     <a href="/add-options/{{ base64_encode($question->qid) }}" target="_blank"><button class="btn btn-info" title="Add Options to Questions"><i class="fa fa-plus"></i></button></a>
-                    <a onclick="deleteRecord('{{ base64_encode($question->qid) }}')"><button class="btn btn-danger" title="Delete Record"><i class="fa fa-trash"></i></button></a></td>
+                    @endif
+                    <a onclick="deleteRecord('{{ base64_encode($question->qid) }}')"><button class="btn btn-danger" title="Delete Record"><i class="fa fa-trash"></i></button></a>
+                    </td>
                   </tr>
                  @endforeach
                   </tbody>
+
+                  <h5 style="margin-left:10px"><a href="{{ route('viewExams') }}"><i class="fa fa-arrow-left"></i> Back </a></h5>
+             
                 </table>
+                {{ $questions->links() }}
               </div>
+              
           </div>
           <!-- /.box -->
             

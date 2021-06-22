@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 
 interface QuestionRepositoryInterface
 {
-   public function all($id): Collection;
+   public function all($id);
 
    public function count($id);
 
@@ -16,5 +16,9 @@ interface QuestionRepositoryInterface
    public function nextQuestion($id,$exam);
 
    public function deleteQuestion($id);
+
+   public function questionTypes();
+
+   public function questionexists($id);
 
 }

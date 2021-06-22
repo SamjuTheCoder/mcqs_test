@@ -21,40 +21,53 @@ class StudentExamTimeRepository implements StudentExamTimeInterface
         return $this->model->create($data);
     }
 
-    public function update(array $data, $id)
+    public function updateCount(array $data, $id, $examID)
     {
-        return $this->model->where('studentID',$id)->update($data);
+        return $this->model->where('studentID',$id)->where('examID',$examID)->update($data);
     }
 
-    public function ifexists($id)
+    public function ifexists($examID,$id)
     {
-       return $this->model->where('studentID',$id)->exists();
+       return $this->model
+       ->where('examID',$examID)
+       ->where('studentID',$id)->exists();
     }
 
-    public function find($id)
+    public function find($examID, $id)
     {
-        if( $this->model->where('studentID',$id)->exists() )
+        if( $this->model->where('examID',$examID)->where('studentID',$id)->exists() )
         {
-            return  $this->model->where('studentID',$id)->first();
+            return  $this->model
+            ->where('examID',$examID)
+            ->where('studentID',$id)->first();
         }
         else {
             return 'Record does not exists';
         }
     }
 
-    public function check($id,$h, $m)
+    public function check($examID,$id,$h,$m)
     {
-        return $this->model->where('studentID',$id)->where('hour',$h)->where('mins',$m)->exists();
+        return $this->model
+        ->where('examID',$examID)
+        ->where('studentID',$id)->where('hour',$h)
+        ->where('mins',$m)
+        ->exists();
     }
 
     public function delete($id)
     {
-        return $this->model->where('studentID',$id)->delete();
+        return $this->model
+        ->where('studentID',$id)
+        ->delete();
     }
 
-    public function updatetime(array $data, $id)
+    public function updateTime(array $data, $id,$examID)
     {
-        return $this->model->where('studentID',$id)->update($data);
+        return $this->model
+        ->where('studentID',$id)
+        ->where('examID',$examID)
+        ->update($data);
     }
 
 }

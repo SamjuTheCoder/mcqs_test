@@ -23,7 +23,9 @@ use App\Repositories\AcademicSessionInterface;
 use App\Repositories\AcademicYearInterface;
 use App\Repositories\SemesterInterface;
 use App\Repositories\ClassInterface;
+use App\Repositories\CreateExamInterface;
 use DB;
+use Session;
 
 class AdminController extends Controller
 {
@@ -39,8 +41,9 @@ class AdminController extends Controller
     private $sessionRepository;
     private $yearRepository;
     private $classRepository;
+    private $createexamsRepository;
 
-    public function __construct(ClassInterface $classRepository, SemesterInterface $semesterRepository, AcademicSessionInterface $sessionRepository, AcademicYearInterface $yearRepository, ExamtypeRepositoryInterface $examtypeRepository, UserRepositoryInterface $userRepository, TakeExamRepositoryInterface $takeexamRepository,AssignModuleRepositoryInterface $assignmoduleRepository, ModuleRoleRepositoryInterface $moduleroleRepository, QuestionRepositoryInterface $questionRepository,AnswerRepositoryInterface $answerRepository)
+    public function __construct(CreateExamInterface $createexamsRepository,ClassInterface $classRepository, SemesterInterface $semesterRepository, AcademicSessionInterface $sessionRepository, AcademicYearInterface $yearRepository, ExamtypeRepositoryInterface $examtypeRepository, UserRepositoryInterface $userRepository, TakeExamRepositoryInterface $takeexamRepository,AssignModuleRepositoryInterface $assignmoduleRepository, ModuleRoleRepositoryInterface $moduleroleRepository, QuestionRepositoryInterface $questionRepository,AnswerRepositoryInterface $answerRepository)
     {
         $this->middleware('auth');
         $this->answerRepository = $answerRepository;
@@ -54,34 +57,25 @@ class AdminController extends Controller
         $this->sessionRepository = $sessionRepository;
         $this->yearRepository = $yearRepository;
         $this->classRepository = $classRepository;
+        $this->createexamsRepository = $createexamsRepository;
     }
 
     public function viewQuestions($id)
     {
         $data['examID'] = base64_decode($id);
-        //dd($data['examID']);
-        $data['title'] = DB::table('create_exams')
-        ->where('create_exams.id',$data['examID'])
-        ->leftjoin('exam_types','create_exams.examtype','=','exam_types.id')
-        ->leftjoin('student_classes','create_exams.class','=','student_classes.id')
-        ->leftjoin('subjects','create_exams.subject','=','subjects.id')
-        ->first();
-
+        $data['title'] = $this->createexamsRepository->getExamTitle($data['examID']);
         $data['questions'] = $this->questionRepository->all($data['examID']);
+        $data['question_type'] = $data['title']->question_type;
+        Session::put('questionType',$data['title']->question_type);
 
         return view('Questions.viewQuestions',$data);
     }
 
     public function addQuestions($id)
     {
+        //dd(base64_decode($id));
         $data['examID'] = base64_decode($id);
-        //dd($data['examID']);
-        $data['title'] = DB::table('create_exams')
-        ->where('create_exams.id',$data['examID'])
-        ->leftjoin('exam_types','create_exams.examtype','=','exam_types.id')
-        ->leftjoin('student_classes','create_exams.class','=','student_classes.id')
-        ->leftjoin('subjects','create_exams.subject','=','subjects.id')
-        ->first();
+        $data['title'] = $this->createexamsRepository->getExamTitle($data['examID']);
 
         $data['questions'] = $this->questionRepository->all($data['examID']);
 
@@ -97,15 +91,21 @@ class AdminController extends Controller
         
         //dd($request->exam);
 
-        if(DB::table('questions')->where('question',$request->question)->exists()){
+        if($this->questionRepository->questionexists($request->question)){
             return back()->with('error_message','Question already exists');
         }
+        $data['questiontypex'] = $request->question_type;
+        $this->questionRepository->create([
+            'examID'=> $request->exam,
+            'question_type'=> $request->question_type,
+            'question'=>$request->question,
+            'score'=>$request->score
+        ]);
 
-        $data['questions'] = $this->questionRepository->create(['examID'=> $request->exam,'question'=>$request->question,'score'=>$request->score]);
         $data['questions'] = $this->questionRepository->all($request->exam);
 
         return back()->with('success','Question addedd successfully!');
-        //return view('Questions.addQuestions',$data);
+
     }
 
     public function deleteQuestions($id)
@@ -123,22 +123,20 @@ class AdminController extends Controller
     public function viewAnswers()
     {
         $data['questionx']='';
-        //$data['answer']=null;
         $data['question'] = DB::table('questions')->get();
-        //$data['answer'] = $this->answerRepository->all();
-        //dd($data['question']);
+
         return view('Answers.addAnswers',$data);
     }
 
     //answers 
     public function addOptions($id)
     {
-        //dd(base64_decode($id));
+        $data['question_type'] = Session::get('questionType');
         $data['questionx']=base64_decode($id);
         $data['questionID']=base64_decode($id);
         $data['question'] = DB::table('questions')->where('id',base64_decode($id))->get();
         $data['answer'] = $this->answerRepository->all(base64_decode($id));
-        //dd($data['question']);
+
         return view('Answers.addAnswers',$data);
     }
 

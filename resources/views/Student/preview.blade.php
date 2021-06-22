@@ -6,11 +6,11 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Pre View
+        Result Preview
  
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="/homr"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="#">Exams</a></li>
         <li class="active">Take</li>
       </ol>
@@ -50,7 +50,10 @@
 
                
                 <div class="card"> 
-                   <h3> Result preview</h3>
+                  @if($current_subject==null)
+                  @else
+                   <h3> {{ $current_subject->subject }}</h3>
+                  @endif
                 </div>
                 
                 <div class="card"> 
@@ -59,7 +62,8 @@
                   <tr>
                        <th>SN</th>
                        <th>Questions</th>
-                       <th>Answer</th>
+                       <th>Answers</th>
+                       <th>Supplied Answer</th>
                        <th>Score</th>
                   </tr>
                   </thead>
@@ -72,7 +76,8 @@
                   <tr>
                     <td>{{ $i++ }}</td>
                     <td>{{ $question->question }}</td>
-                    <td>{{ $question->answer }} @if($question->correct_answer==null) <i  class="fa fa-remove" style="color:red"></i> @else <i  class="fa fa-check" style="color:green"></i> @endif</td>
+                    <td>{{ strip_tags($question->answer) }}</td>
+                    <td>{{ $question->subjective_answer }} @if($question->correct_answer==null) <i  class="fa fa-remove" style="color:red"></i> @else <i  class="fa fa-check" style="color:green"></i> @endif</td>
                     <td>@if($question->correct_answer==null) {{ '0'}} @else {{ $question->score }} @php $score+=$question->score @endphp @endif</td>
                   </tr>
                  @endforeach

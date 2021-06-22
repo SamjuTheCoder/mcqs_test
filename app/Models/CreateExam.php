@@ -11,6 +11,7 @@ class CreateExam extends Model
 
     protected $fillable = [
         'examtype',
+        'question_type',
         'class',
         'subject',
         'session',

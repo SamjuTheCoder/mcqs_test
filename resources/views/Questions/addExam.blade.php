@@ -10,7 +10,7 @@
  
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="#">Exam</a></li>
         <li class="active">Create</li>
       </ol>
@@ -107,13 +107,21 @@
                                     @endforeach
                     </select>
                 </div>
-
+                <div class="form-group col-md-2">
+                  <label for="exampleInputEmail1">Question Type</label>
+                  <select id="select-state" class="form-control" name="question_type" required >
+                                    <option value="">Choose...</option>s
+                                    @foreach($questiontype as $pd)
+                                    <option value="{{ $pd->id }}" {{ ($questiontypex == $pd->id || old("question_type") == $pd->id )? "selected" :"" }}>{{$pd->questionType}} </option>
+                                    @endforeach
+                    </select> 
+                </div>
                 <div class="form-group col-md-6">
                   <label for="exampleInputEmail1">Exam Title</label>
                   <input type="text" class="form-control" id="exampleInputEmail1" name="exam" placeholder="Enter Name" value="{{ old('exam') }}" required>
                 </div>
 
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                   <label for="exampleInputEmail1">Exam Time(Hours)</label>
                   
                   <select name="quizTimeHour" class="form-control">
@@ -179,8 +187,8 @@
                                                                                     <option value="58" > 58 Hour(s) </option>
                                                                             </select>
                 </div>
-                <div class="form-group col-md-3">
-                <label for="quizTimeMinute">Exam/CA Time (In Minute) <span class="text-danger">*</span></label>
+                <div class="form-group col-md-2">
+                <label for="quizTimeMinute">(In Minute) <span class="text-danger">*</span></label>
                     <select name="quizTimeMinute" class="form-control" required>
                     <option value="">Select</option>
                     <option value="00" selected> 0 Minute(s) </option>
@@ -251,7 +259,7 @@
                 <div class="control-group">
               <label class="control-label">Instruction:</label>
               <div class="controls">
-                 <textarea class="span11" id="editor" name="instruction"  rows="3" required>{{old('remark')}}</textarea>
+                 <textarea class="span11" id="editor" name="instruction"  rows="2" required>{{old('remark')}}</textarea>
               </div>
             </div>
               </div>
@@ -268,6 +276,7 @@
                   <tr>
                        <th>SN</th>
                        <th>Exam Type</th>
+                       <th>Questions Type</th>
                        <th>Term</th>
                        <th>Class</th>
                        <th>Subject</th>
@@ -275,7 +284,9 @@
                        <th>Year</th>
                        <th>Exam Title </th>
                        <th>Time Alloted</th>
+                       <th>Active<br> Status</th>
                        <th colspan="2">Action</th>
+
                   </tr>
                   </thead>
                   <tbody>
@@ -284,6 +295,7 @@
                   <tr>
                    <td>{{ $i++ }}</td>
                    <td>{{  $exam->type }}</td>
+                   <td>{{ $exam->questionType }}</td>
                    <td>{{ $exam->term }}</td>
                     <td>{{  $exam->class }}</td>
                     <td>{{  $exam->subject }}</td>
@@ -291,6 +303,10 @@
                     <td>{{ $exam->year }}</td>
                     <td>{{ $exam->examname }}</td>
                     <td>{{ $exam->hour ? $exam->hour.'hrs' : '' }}  {{ $exam->mins ? $exam->mins.'mins' : '' }} </td>
+                    <td>
+                    @if($exam->active_status==0)<a onclick="activateExam('{{ base64_encode($exam->qid) }}')"><button class="btn btn-danger" title="Exam Not Active"><i class="fa fa-remove"></i></button></a>
+                    @elseif($exam->active_status==1) <a onclick="deactivateExam('{{ base64_encode($exam->qid) }}')"><button class="btn btn-success" title="Exam Active"><i class="fa fa-check"></i></button></a>  @endif</td>
+                   </td>
                     <td><a href="add-questions/{{ base64_encode($exam->qid) }}"><button class="btn btn-info" title="Add Questions to Exam"><i class="fa fa-plus"></i></button></a>
                     <a href="view-questions/{{ base64_encode($exam->qid) }}" target="_blank"><button class="btn btn-success" title="View Questions"><i class="fa fa-eye"></i></button></a>
                     
@@ -300,6 +316,8 @@
                  @endforeach
                   </tbody>
                 </table>
+
+                {{ $exams->links() }}
               </div>
           </div>
           <!-- /.box -->
@@ -325,14 +343,33 @@
         CKEDITOR.replace( 'editor' );
     </script>
 <script>
-<script>
     function deleteRecord(x)
     {
         var i = confirm('Do you eally want to delete?');
 
         if(i==true)
         {
-            document.location = "/delete-questions/"+x;
+            document.location = "/delete-exams/"+x;
+        }
+    }
+
+    function activateExam(x)
+    {
+        var i = confirm('             Do you eally want to Activate Exam?');
+
+        if(i==true)
+        {
+            document.location = "/activate-exam/"+x;
+        }
+    }
+
+    function deactivateExam(x)
+    {
+        var i = confirm('             Do you eally want to De-Activate Exam?');
+
+        if(i==true)
+        {
+            document.location = "/deactivate-exam/"+x;
         }
     }
 </script>

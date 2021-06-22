@@ -30,8 +30,10 @@ Route::get('/create-exams', [App\Http\Controllers\CreateExamController::class, '
 Route::post('/create-exams', [App\Http\Controllers\CreateExamController::class, 'saveExams'])->name('saveExams');
 Route::get('/delete-exams/{id}', [App\Http\Controllers\CreateExamController::class, 'deleteExams'])->name('deleteExams');
 Route::get('/get-subject', [App\Http\Controllers\CreateExamController::class, 'loadSubects'])->name('loadSubects'); //ajax
+Route::get('/activate-exam/{id}', [App\Http\Controllers\CreateExamController::class, 'activateExam'])->name('activateExam'); //ajax
+Route::get('/deactivate-exam/{id}', [App\Http\Controllers\CreateExamController::class, 'deactivateExam'])->name('deactivateExam'); //ajax
 
- 
+
 //add questions
 Route::get('/add-questions/{id}', [App\Http\Controllers\AdminController::class, 'addQuestions'])->name('addQuestions');
 Route::post('/add-questions', [App\Http\Controllers\AdminController::class, 'saveQuestions'])->name('saveQuestions');
@@ -42,6 +44,7 @@ Route::get('/view-questions/{id}', [App\Http\Controllers\AdminController::class,
 Route::get('/add-answers', [App\Http\Controllers\AdminController::class, 'viewAnswers'])->name('viewAnswer');
 Route::post('/add-answers', [App\Http\Controllers\AdminController::class, 'saveAnswers'])->name('saveAnswer');
 Route::get('/delete-answers/{id}', [App\Http\Controllers\AdminController::class, 'deleteAnswers'])->name('deleteAnswer');
+
 //add options
 Route::get('/add-options/{id}', [App\Http\Controllers\AdminController::class, 'addOptions'])->name('addOptions');
 
@@ -70,6 +73,8 @@ Route::get('/take-examx', [App\Http\Controllers\StudentController::class, 'saveE
 Route::post('/update_quiz_time', [App\Http\Controllers\StudentController::class, 'updateTime'])->name('updateTime');
 
 Route::get('/pre-view', [App\Http\Controllers\StudentController::class, 'displayScores'])->name('preView');
+Route::get('/past-exams', [App\Http\Controllers\StudentController::class, 'pastExams'])->name('pastExams');
+Route::get('/view-past-exams/{id}/{id2}/{id3}/{id4}/{id5}', [App\Http\Controllers\StudentController::class, 'viewpastExams'])->name('viewpastExams');
 
 //set time
 Route::get('/set-time', [App\Http\Controllers\SetExamTime::class, 'setTime'])->name('setTime');

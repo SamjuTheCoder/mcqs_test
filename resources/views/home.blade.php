@@ -15,7 +15,7 @@
       
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="active">Dashboard</li>
       </ol>
     </section>
@@ -95,13 +95,47 @@
   </div>
   @else
   @endif
-  <!-- /.content-wrapper -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+       
+        <small><strong>Admin Dashboard </strong></small>
+      
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Dashboard</li>
+      </ol>
+    </section>
+   
+    <!-- Main content -->
+    <section class="content">
 
+      <!-- Info boxes -->
+     
+      <!-- /.row -->
 
-  <!-- /.control-sidebar -->
-  <!-- Add the sidebar's background. This div must be placed
-       immediately after the control sidebar -->
-  <div class="control-sidebar-bg"></div>
+      <!-- /.row -->
+
+      <!-- Main row -->
+      <div class="row">
+        <!-- Left col -->
+        <div class="col-md-12">
+         
+          
+          <!-- /.row -->
+
+         
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      
+
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
 
 </div>
 @endsection

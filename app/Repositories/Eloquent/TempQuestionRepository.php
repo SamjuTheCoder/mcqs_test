@@ -40,32 +40,49 @@ class TempQuestionRepository implements TempQuestionInterface
     {
         return $this->model
         ->where('examID',$id)
-        ->limit(1)
-        //->orderby('id','asc')
-        ->get();
+        ->where('isAnswered',0)
+        ->first();
     }
     
     public function next($id)
     {
         return $this->model
-        ->where('id','=',$id)
-        ->limit(1)
-        ->orderby('id','asc')
-        ->get();
+        ->where('id','>',$id)
+        ->where('isAnswered',0)
+        ->first();
     }
 
     public function previous($id)
     {
-        return $this->model->where('id','=',$id)
-        ->where('id',$id)
-        ->limit(1)
-        ->orderby('id','desc')
-        ->get();
+        return $this->model
+        ->where('id','<',$id)
+        ->where('isAnswered',1)
+        ->first();
     }
 
-    public function delete($id)
+    public function delete($examID,$studenID)
     {
-        return $this->model->where('studentID','=',$id)->delete();
+        return $this->model
+        ->where('examID',$examID)
+        ->where('studentID','=',$studenID)
+        ->delete();   
+    }
+
+    public function updateTempQuestion($examID, $studentID, $id)
+    {
+        return $this->model
+        ->where('examID','=',$examID)
+        ->where('studentID','=',$studentID)
+        ->where('questionID','=',$id)
+        ->update(['isAnswered'=>1]);
+    }
+
+    public function deleteStudentTime($examID,$studenID)
+    {
+        DB::table('student_exam_times')
+        ->where('examID',$examID)
+        ->where('studentID','=',$studenID)
+        ->delete();   
     }
 
 }

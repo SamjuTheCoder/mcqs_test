@@ -10,7 +10,7 @@
  
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="#">Exams</a></li>
         <li class="active">Take</li>
       </ol>
@@ -54,9 +54,11 @@
                 
                 <table> 
                 @foreach($getClass as $subject)
+                    @foreach($examinfo as $exam)
                     <div class="bg-info">
-                        <a href="proceed/{{base64_encode($subject->sid)}}"><h4 style="width:200px;font-weight:bold"><span class="fa fa-check"></span> {{ $subject->subject}}</h4></a>
+                   <a href="proceed/{{base64_encode($subject->subjectID)}}"><h4 style="font-weight:bold"><span class="fa fa-dashboard"></span> {{ $subject->subject}} [ <span style="color:green">{{ $exam->type}} - {{ $exam->term}}- {{ $exam->session}}</span> ] </h4></a>
                     </div> 
+                    @endforeach
                 @endforeach
                 </table>
                 
@@ -89,86 +91,11 @@
 
 @section('script')
 <script>
-    function deleteRecord(x)
+
+    function funcTaken()
     {
-        var i = confirm('Do you eally want to delete?');
-
-        if(i==true)
-        {
-            document.location = "/delete-answers/"+x;
-        }
+      alert('Exam has been taken');
     }
-</script>
-
-<!-- <script>
-
-    $(document).ready(function () {
-          $('select').selectize({
-              sortField: 'text'
-          });
-      });
-
-</script>
-
-<script>
-  function startTimer(duration, display) {
-    var timer = duration, minutes, seconds;
-    setInterval(function () {
-        minutes = parseInt(timer / 60, 10);
-        seconds = parseInt(timer % 60, 10);
-
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-
-        display.textContent = minutes + ":" + seconds;
-
-        if (--timer < 0) {
-            timer = duration;
-        }
-    }, 1000);
-}
-
-window.onload = function () {
-    var fiveMinutes = 60 * 60,
-        display = document.querySelector('#time');
-    startTimer(fiveMinutes, display);
-};
-</script> -->
-
-<script>
- //defining timer for donor 1 appearing on receiver dashboard
-
-// Set the date we're counting down to
-var countDownDate = new Date("<?php echo '7-6-2021 16:10' ?>").getTime();
-// var countDownDate = new Date("").getTime();
-
-// Update the count down every 1 second
-var x = setInterval(function() {
-
-    // Get todays date and time
-    var now = new Date().getTime();
     
-    // Find the distance between now an the count down date
-    var distance = countDownDate - now;
-    
-    // Time calculations for days, hours, minutes and seconds
-    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-    
-    // Output the result in an element with id="demo"
-    document.getElementById("time").innerHTML =  hours + "h "
-    + minutes + "m " + seconds + "s ";
-    
-    // If the count down is over, write some text 
-    if (distance < 0) {
-        location.href = "elapse.php?email=";
-        clearInterval(x);
-        document.getElementById("time").innerHTML = "EXPIRED";
-    }
-}, 1000);
-
-
 </script>
 @endsection

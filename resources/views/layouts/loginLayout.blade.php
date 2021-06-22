@@ -34,7 +34,7 @@
 
 @yield('content')
 <!-- /.login-box -->
-
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <!-- jQuery 3 -->
 <script src="{{ asset('bower_components/jquery/dist/jquery.min.js') }}"></script>
 <!-- Bootstrap 3.3.7 -->
