@@ -44,7 +44,7 @@
   <!-- mini logo for sidebar mini 50x50 pixels -->
   <span class="logo-mini"><b>Adm</b></span>
   <!-- logo for regular state and mobile devices -->
-  <span class="logo-lg"><b>Admin</b></span>
+  <span class="logo-lg"><b>{{ $userRole->rolename }}</b></span>
 </a>
 
 <!-- Header Navbar: style can be found in header.less -->
@@ -206,6 +206,7 @@
 <script src="{{ asset('dist/js/pages/dashboard2.js') }}"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="{{ asset('dist/js/demo.js') }}"></script>
+<script src="{{ asset('bower_components/webcam/webcam.min.js') }}"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" crossorigin="anonymous"></script>
    

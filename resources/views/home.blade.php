@@ -94,7 +94,7 @@
     <!-- /.content -->
   </div>
   @else
-  @endif
+  
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -136,6 +136,7 @@
     </section>
     <!-- /.content -->
   </div>
+  @endif
 
 </div>
 @endsection

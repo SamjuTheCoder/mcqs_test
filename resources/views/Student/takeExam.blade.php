@@ -46,14 +46,14 @@
           <!-- general form elements -->
           <div class="box box-primary">
           <div class="pull-left">
-            <h3 class="time" style="margin-left:30px;font-size:18px">
-            <b id="quizTimeCounter" class="badge"><span id="getNewTime" >{{ isset($getQuizTime) ? $getQuizTime : "00:15:00" }}</span></b>
+            <h3 class="time" style="margin-left:30px;">
+            <b id="quizTimeCounter" style="font-size:16px" class="badge"><span id="getNewTime" >{{ isset($getQuizTime) ? $getQuizTime : "00:15:00" }}</span></b>
             </h3>
           </div>
 
           <div class="pull-right">
-            <h3 class="time" style="margin-right:30px;font-size:18px">
-            <center><span class="badge">{{ $count->questions_count }} Questions</span>  </center>
+            <h3 class="time" style="margin-right:30px;">
+            <center><span class="badge" style="font-size:16px">{{ $count->questions_count }} Questions</span>  </center>
             </h3>
           </div>
             <br>
@@ -63,7 +63,7 @@
                 
               <div class="col-md-12">
                 <table class="table table-responsive" style="font-size: 26px; border-style:none; background:#000;">
-                <form method="get" action="{{ route('saveExam') }}">
+                <form  method="get" action="{{ route('saveExam') }}">
                 @csrf
 
                 
@@ -73,12 +73,12 @@
                
                 <tr>
                      <td class="bg-info">
-                      <h3 style="font-size:26px"><strong>{{ $question->question }}</strong><h3>
+                      <h3 style="font-size:20px"><strong>{{ $question->question }}</strong><h3>
                     </td>
 
                     <td  rowspan="5" valign="middle" width="150" class="bg-info"> 
                       <br>
-                      <div class="uservideo"> 
+                      <div class="uservideo badge badge-success"> 
                       <div id="my_camera"></div>
                       <div id="results" style="display:none"></div>
 
@@ -89,11 +89,11 @@
                 </tr>
                 @if($question_type==1)
                         <tr class="bg-success">
-                            <td> <textarea class="form-control" rows="3" id="exampleInputEmail1" name="answer" placeholder="Enter Answer"  ></textarea></td>
+                            <td> <textarea class="form-control" rows="3" id="exampleInputEmail1" name="answer" placeholder="Enter Answer" required ></textarea></td>
                         </tr>
                 @elseif($question_type==2)
                         <tr class="bg-success">
-                            <td> <textarea class="form-control" rows="3" id="exampleInputEmail1" name="answer" placeholder="Enter Answer"  ></textarea></td>
+                            <td> <textarea class="form-control" rows="3" id="exampleInputEmail1" name="answer" placeholder="Enter Answer" required ></textarea></td>
                         </tr>
                 @elseif($question_type==3)
                           @php  
@@ -103,20 +103,24 @@
                             @foreach($answers as $ans)
                             @php $i++;   @endphp
                             <tr class="bg-success">
-                                <td> <strong>Option <?php if($i==1){echo 'A';} elseif($i==2){echo 'B';} elseif($i==3){echo 'C';} elseif($i==4){echo 'D';} elseif($i==5){echo 'E';}?> <input type="radio" class="form-check-input" value="{{ base64_encode($ans->id) }}" name="answer"></strong> {{ strip_tags($ans->answer) }}</td>
+                                <td> <strong>Option <?php if($i==1){echo 'A';} elseif($i==2){echo 'B';} elseif($i==3){echo 'C';} elseif($i==4){echo 'D';} elseif($i==5){echo 'E';}?> <input type="radio" class="form-check-input" value="{{ base64_encode($ans->id) }}" name="answer" required></strong> {{ strip_tags($ans->answer) }}</td>
                             </tr>
                             @endforeach
                 @endif
                 
                 </table>
-                @if($count->questions_count==$count_questionx)
-                  <button type="submit" value="next" name="next" class="btn btn-info buttonstyle" onClick="take_snapshot()">Next <i class="fa fa-arrow-right"></i></button>
+                @if(($count->questions_count==$count_questionx)&&($count->questions_count>1))
+                  <button type="submit" value="next" id="nextx" name="next" class="btn btn-info text-black buttonstyle btn-block badge badge-warning" onClick="take_snapshot()">Next <i class="fa fa-arrow-right"></i></button>
+                  <button type="submit" style="display:none" value="Submit" id="submitQuizx" name="submit" class="btn btn-success text-black buttonstyle btn-block badge badge-danger" onClick="take_snapshot()">Submit <i class="fa fa-send-o"></i></button>
                 @elseif(($count->questions_count<$count_questionx)&&($count->questions_count>=2))
-                  <button type="submit" value="previous" name="previous" class="btn btn-info buttonstyle" onClick="take_snapshot()"><i class="fa fa-arrow-left"></i> Previous </button>
-                  <button type="submit" value="next" name="next" class="btn btn-info buttonstyle" onClick="take_snapshot()">Next <i class="fa fa-arrow-right"></i></button>
+                <button type="submit" value="next" id="next" name="next" class="btn btn-info buttonstyle text-black btn-block badge badge-warning" onClick="take_snapshot()">Next <i class="fa fa-arrow-right"></i></button>
+                <button type="submit" style="display:none" value="Submit" id="submitQuizy" name="submit" class="btn btn-success text-black buttonstyle btn-block badge badge-danger" onClick="take_snapshot()">Submit <i class="fa fa-send-o"></i></button>
+                <button type="submit" value="previous" id="previous" name="previous" class="btn btn-primary text-black buttonstyle btn-block badge badge-success" onClick="take_snapshot()"><i class="fa fa-arrow-left"></i> Previous </button>
                 @elseif($count->questions_count==1)
-                  <button type="submit" value="Submit" name="submit" class="btn btn-success buttonstyle" onClick="take_snapshot()">Submit <i class="fa fa-send-o"></i></button>
+                  <button type="submit" value="Submit" id="submitQuiz" name="submit" class="btn btn-success text-black buttonstyle btn-block badge badge-danger" onClick="take_snapshot()">Submit <i class="fa fa-send-o"></i></button>
                 @endif
+                <div id="message" style="color:red;background-color:white;display:none"><center>Time up!!! Please submit now to avoid system failure!<center></div>
+               
                </form>
                 <p>&nbsp;</p>
                 
@@ -151,12 +155,12 @@
 
 @section('script')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.min.js"></script> -->
 
 <script language="JavaScript">
     Webcam.set({
-        width: 250,
-        height: 220,
+        width: 160,
+        height: 120,
         image_format: 'jpeg',
         jpeg_quality: 90
     });
@@ -171,25 +175,11 @@
         } );
     }
 
-    function dataURLtoFile(dataurl, filename) {
-        var arr = dataurl.split(','),
-            mime = arr[0].match(/:(.*?);/)[1],
-            bstr = atob(arr[1]), 
-            n = bstr.length, 
-            u8arr = new Uint8Array(n);
-            
-        while(n--){
-            u8arr[n] = bstr.charCodeAt(n);
-        }
-        
-        return new File([u8arr], filename, {type:mime});
-        }
+    
 </script>  
 <script>
         //$(document).ready(function(){
             $('#bgTimer').css('background', 'green').css('color', 'white');
-            $('#hideCloseWhenTimeUp').show();
-            $('#hideCloseWhenTimeUp2').show();
             var getQuizTime = $('#getNewTime').html(); //"00:15:00";
             if (getQuizTime == "00:00:00") {
                 clearInterval(countdownTimer);
@@ -225,8 +215,8 @@
                         clearInterval(countdownTimer);
                         var getCurrent =  (hour +":"+ minutes +":"+ remainingSeconds);
                         updateTime(getCurrent);
-                        //take_snapshot();
                         endQuiz(countdownTimer);
+                        
                     } else {
                         seconds--;
                         var getCurrent =  (hour +":"+ minutes +":"+ remainingSeconds);
@@ -240,13 +230,15 @@
             }
             function endQuiz(countdownTimer)
             {
-                $('#bgTimer').css('background', 'red').css('color', 'white');
-                document.getElementById('quizTimeCounter').innerHTML = "Quiz Ended";
-                $('#hideCloseWhenTimeUp').hide();
-                $('#hideCloseWhenTimeUp2').hide();
-                $('#disableAfterTimeOut *').prop('disabled', true); //disableAfterTimeOut
-                $('#disableWhenExamStarts *').prop('disabled', true);
-                $('#submitQuiz').click();
+
+                document.getElementById('quizTimeCounter').innerHTML = "Exam Ended";
+                document.getElementById("message").style.display='block';
+                document.getElementById("nextx").style.display='none';
+                document.getElementById("submitQuizx").style.display='block';
+                document.getElementById("submitQuizy").style.display='block';
+                document.getElementById("previous").style.display='none';
+                document.getElementById("next").style.display='none';
+                
                 clearInterval(countdownTimer);
             }
 
@@ -258,7 +250,6 @@
                 type: 'post',
                 data: {'getTime': getCurrent, '_token': $('input[name=_token]').val()},
                 success: function(data) {
-                    
                 },
                 error: function(error) {
                     //alert("Network fluctuating... Time paused! \n\n Click OK to continue.");
@@ -269,117 +260,4 @@
     //});
     </script>
 
- <!-- <script type="text/javascript">
- window.onload = function() {
-  startTimer();
-};
-
-document.getElementById('time').innerHTML = '90:00';
-  //03 + ":" + 00 ;
- 
- 
-function startTimer() {
-  var presentTime = document.getElementById('time').innerHTML;
-  var timeArray = presentTime.split(/[:]+/);
-  var m = timeArray[0];
-  var s = checkSecond((timeArray[1] - 1));
-  if(s==59){m=m-1}
-  if(m==0 && s==0){document.getElementById("form").submit();}
-  
-  setTimeout(startTimer, 1000);
-  document.getElementById('time').innerHTML =
-    m + ":" + s;
-}
- 
-function checkSecond(sec) {
-  if (sec < 10 && sec >= 0) {sec = "0" + sec}; // add zero in front of numbers < 10
-  if (sec < 0) {sec = "59"};
-  return sec;
-  if(sec == 0 && m == 0){ alert('stop it')};
-}
-</script>
-
-<script>
-    function deleteRecord(x)
-    {
-        var i = confirm('Do you eally want to delete?');
-
-        if(i==true)
-        {
-            document.location = "/delete-answers/"+x;
-        }
-    }
-</script> -->
-
-<!-- <script>
-
-    $(document).ready(function () {
-          $('select').selectize({
-              sortField: 'text'
-          });
-      });
-
-</script>
-
-<script>
-  function startTimer(duration, display) {
-    var timer = duration, minutes, seconds;
-    setInterval(function () {
-        minutes = parseInt(timer / 60, 10);
-        seconds = parseInt(timer % 60, 10);
-
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-
-        display.textContent = minutes + ":" + seconds;
-
-        if (--timer < 0) {
-            timer = duration;
-        }
-    }, 1000);
-}
-
-window.onload = function () {
-    var fiveMinutes = 60 * 60,
-        display = document.querySelector('#time');
-    startTimer(fiveMinutes, display);
-};
-</script> -->
-
-<!-- <script>
- //defining timer for donor 1 appearing on receiver dashboard
-
-// Set the date we're counting down to
-var countDownDate = new Date("").getTime();
-// var countDownDate = new Date("").getTime();
-
-// Update the count down every 1 second
-var x = setInterval(function() {
-
-    // Get todays date and time
-    var now = new Date().getTime();
-    
-    // Find the distance between now an the count down date
-    var distance = countDownDate - now;
-    
-    // Time calculations for days, hours, minutes and seconds
-    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-    
-    // Output the result in an element with id="demo"
-    document.getElementById("time").innerHTML =  hours + "h "
-    + minutes + "m ";
-    
-    // If the count down is over, write some text 
-    if (distance < 0) {
-        location.href = "elapse.php?email=";
-        clearInterval(x);
-        document.getElementById("time").innerHTML = "EXPIRED";
-    }
-}, 1000);
-
-
-</script> -->
 @endsection

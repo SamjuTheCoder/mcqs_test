@@ -53,13 +53,12 @@
                 <div class="card"> 
                 
                 <table> 
-                @foreach($getClass as $subject)
                     @foreach($examinfo as $exam)
-                    <div class="bg-info">
-                   <a href="proceed/{{base64_encode($subject->subjectID)}}"><h4 style="font-weight:bold"><span class="fa fa-dashboard"></span> {{ $subject->subject}} [ <span style="color:green">{{ $exam->type}} - {{ $exam->term}}- {{ $exam->session}}</span> ] </h4></a>
-                    </div> 
+                    <div>
+                    <a href="proceed/{{base64_encode($exam->subjectID)}}" class="badge badge-info"><h4 style="font-weight:bold"><span class="fa fa-dashboard"></span> {{ $exam->subject}} [ <span style="color:white">{{ $exam->type}} - {{ $exam->term}}- {{ $exam->session}}</span> ] </h4></a>
+                    </div>
+                    <br> 
                     @endforeach
-                @endforeach
                 </table>
                 
                 </div>

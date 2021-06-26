@@ -59,7 +59,38 @@
                 <div class="card"> 
                 <table class="table no-margin">
                   <thead>
+                  @if(Session::get('question_type')==2)
                   <tr>
+                       <th>SN</th>
+                       <th>Questions</th>
+                       <th>Answers</th>
+                       <th>Supplied Answer</th>
+                       <th>Score</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  @php 
+                  $i=1; 
+                  $score=0;
+                  @endphp
+                  @foreach($scores as $question)
+                  <tr>
+                    <td>{{ $i++ }}</td>
+                    <td>{{ $question->question }}</td>
+                    <td>{{ strip_tags($question->answer) }}</td>
+                    <td>{{ $question->essay_answer }} </td>
+                    <td> {{ $score+=$question->score }} </td>
+                  </tr>
+                 @endforeach
+                  <tr>
+                  <td><strong>Total Score</strong></td>
+                  <td></td>
+                  <td></td>
+                  <td><strong>{{ $score }}</strong></td>
+                 </tr>
+              @else
+
+              <tr>
                        <th>SN</th>
                        <th>Questions</th>
                        <th>Answers</th>
@@ -87,6 +118,7 @@
                   <td></td>
                   <td><strong>{{ $score }}</strong></td>
                  </tr>
+              @endif
                   </tbody>
                 </table>
                 </div>

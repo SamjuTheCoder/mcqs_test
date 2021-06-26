@@ -12,6 +12,7 @@ use App\Repositories\StudentExamTimeInterface;
 use App\Repositories\CreateExamInterface;
 use App\Repositories\TempQuestionInterface;
 use App\Repositories\SubjectsInterface;
+use App\Repositories\ReusableInterface;
 use App\Http\Controllers\SetExamTime;
 use App\Models\TempQuestion;
 use DB;
@@ -30,10 +31,11 @@ class StudentController extends Controller
     private $createexamsRepository;
     private $tempQuestion;
     private $subjectsRepo;
+    private $reusableRepository;
 
    
 
-    public function __construct(SubjectsInterface $subjectRepo,TempQuestionInterface $tempQuestion, CreateExamInterface $createexamsRepository, StudentExamTimeInterface $studentexamtime, TakeExamRepositoryInterface $takeexamRepository, AssignModuleRepositoryInterface $assignmoduleRepository, ModuleRoleRepositoryInterface $moduleroleRepository, QuestionRepositoryInterface $questionRepository,AnswerRepositoryInterface $answerRepository)
+    public function __construct(ReusableInterface $reusableRepository,SubjectsInterface $subjectRepo,TempQuestionInterface $tempQuestion, CreateExamInterface $createexamsRepository, StudentExamTimeInterface $studentexamtime, TakeExamRepositoryInterface $takeexamRepository, AssignModuleRepositoryInterface $assignmoduleRepository, ModuleRoleRepositoryInterface $moduleroleRepository, QuestionRepositoryInterface $questionRepository,AnswerRepositoryInterface $answerRepository)
     {
         $this->middleware('auth');
 
@@ -46,6 +48,7 @@ class StudentController extends Controller
         $this->createexamsRepository = $createexamsRepository;
         $this->tempQuestion = $tempQuestion;
         $this->subjectRepo = $subjectRepo;
+        $this->reusableRepository = $reusableRepository;
 
     }
 
@@ -53,15 +56,16 @@ class StudentController extends Controller
     {
         
         $studentClass = Auth::user()->class;
-        $data['getClass'] = $this->createexamsRepository->examSubject($studentClass,1);
         $data['examinfo'] = $this->takeexamRepository->examTaken(Auth::user()->class);
-        
+        $data['userRole'] = $this->reusableRepository->getUserRole(Auth::user()->id);
+
         return view('Student.preInformation',$data);
     }
 
     public function examInstruction($id)
     {
-       
+        
+        $data['userRole'] = $this->reusableRepository->getUserRole(Auth::user()->id);
         $data['title'] = $this->createexamsRepository->gettitle(base64_decode($id));
         $data['question'] = [];
 
@@ -98,7 +102,7 @@ class StudentController extends Controller
         Session::put('examID',$questions->examID);
         
         $data['exam_status'] = $this->takeexamRepository->isExamSubmitted($data['readme']->eid,Auth::user()->id);
-       // dd($data['readme']->id);
+
         return view('Student.examInstruction',$data);
     }
 
@@ -155,13 +159,13 @@ class StudentController extends Controller
         $data['exists'] = '';
         $data['question'] = $this->tempQuestion->single(base64_decode($request->equestion));
         Session::put('exam_id',$request->equestion);
-        
+        $data['userRole'] = $this->reusableRepository->getUserRole(Auth::user()->id);
+
         return view('Student.takeExam',$data);
     }
 
     public function saveExam(Request $request)
     {   
-        
         $data['getCorrectAnswer']= [];
         $nextButton = $request->input('next');
         $previousButton = $request->input('previous');
@@ -305,7 +309,7 @@ class StudentController extends Controller
             }
 
             $data['question'] = $this->tempQuestion->next(base64_decode($request->question));
-            $this->studentexamtime->updateCount(['questions_count'=>$data['count_question']-1], Session::get('examID'), Auth::user()->id);
+            $this->studentexamtime->updateCount(['questions_count'=>$data['count_question']-1], Auth::user()->id, Session::get('examID'));
                     
             $data['myTime'] = $this->studentexamtime->find(Session::get('examID'),Auth::user()->id);
 
@@ -313,7 +317,6 @@ class StudentController extends Controller
             $data['mins'] = $data['myTime']->mins;
             $data['getQuizTime']= $data['myTime']->stop_current_time;
 
-            //$this->tempQuestion->delete(base64_decode($get_exam_id),Auth::user()->id);
         }
         elseif($previousButton=='previous')
         {
@@ -405,7 +408,7 @@ class StudentController extends Controller
                 ]);
             }
 
-            $this->studentexamtime->update(['questions_count'=>$data['count_question']-1], Auth::user()->id);
+            $this->studentexamtime->updateCount(['questions_count'=>$data['count_question']-1],Auth::user()->id, Session::get('examID'));
             $data['myTime'] = $this->studentexamtime->find(Session::get('examID'),Auth::user()->id);
 
             $data['hour'] = $data['myTime']->hour;
@@ -415,11 +418,19 @@ class StudentController extends Controller
             //$this->tempQuestion->deleteStudentTime(base64_decode($get_exam_id),Auth::user()->id); //delete record from student time       
             $this->takeexamRepository->updateStatus(base64_decode($get_exam_id),Auth::user()->id); //update status   
             
+            Session::forget('session');
+            Session::forget('class');
+            Session::forget('term');
+            Session::forget('year');
+            Session::forget('subject');
+            Session::forget('examID');
 
             return redirect()->route('preView');
             
         }
-           
+
+        $data['userRole'] = $this->reusableRepository->getUserRole(Auth::user()->id);
+
         return view('Student.takeExam',$data);
             
     }
@@ -436,6 +447,7 @@ class StudentController extends Controller
     {
         $data['current_subject'] = null;
         $data['scores'] = $this->takeexamRepository->previewScore(base64_decode(Session::get('exam_id')),Auth::user()->id);
+        $data['userRole'] = $this->reusableRepository->getUserRole(Auth::user()->id);
 
         return view('Student.preview',$data);
     }
@@ -445,9 +457,8 @@ class StudentController extends Controller
         $studentClass = Auth::user()->class;
         
         $data['examinfo'] = $this->takeexamRepository->pastpapers($studentClass, Auth::user()->id);
-        
+        $data['userRole'] = $this->reusableRepository->getUserRole(Auth::user()->id);
 
-       //dd($data['examinfo']);
         return view('Student.pastExams',$data);
     }
 
@@ -456,7 +467,8 @@ class StudentController extends Controller
        // dd($subject);
         $data['current_subject'] = $this->subjectRepo->getsubject($subject);
         $data['scores'] = $this->takeexamRepository->viewpastpapers(Auth::user()->id,$session,$subject,$term,$type,$class);
-
+        $data['userRole'] = $this->reusableRepository->getUserRole(Auth::user()->id);
+        
         return view('Student.preview',$data);
     }
 

@@ -13,9 +13,8 @@ class Student extends Model
         'fullname',
         'registration_number',
         'sex',
-        'email',
-        'phone',
-        'address',
         'class',
+        'house',
+        'parent',
     ];
 }

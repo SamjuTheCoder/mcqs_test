@@ -1637,10 +1637,9 @@ a:focus {
   position: relative;
   border-radius: 10px;
   margin-top:-20px;
-  padding-left: 10px;
-  padding-right: 20px;
-  height: 230px;
-  width: 270px;
+  padding-right: 30px;
+  height: 130px;
+  width: 170px;
   font-size:24px;
   box-shadow: 0px 0px 2px 4px rgba(5, 4, 4, 5);
   background-image: linear-gradient(rgb(145, 146, 243), rgb(22, 240, 167));
@@ -1655,10 +1654,9 @@ a:focus {
     position: relative;
     border-radius: 10px;
     margin-top:-20px;
-    padding-left: 10px;
-    padding-right: 20px;
-    height: 230px;
-    width: 270px;
+    padding-right: 30px;
+    height: 130px;
+    width: 170px;
     font-size:24px;
     box-shadow: 0px 0px 2px 4px rgba(5, 4, 4, 5);
     background-image: linear-gradient(rgb(145, 146, 243), rgb(22, 240, 167));

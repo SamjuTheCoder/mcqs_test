@@ -11,7 +11,9 @@ use App\Repositories\AcademicSessionInterface;
 use App\Repositories\AcademicYearInterface;
 use App\Repositories\SemesterInterface;
 use App\Repositories\TimeInterface;
+use App\Repositories\ReusableInterface;
 use DB;
+use Auth;
 
 class SetExamTime extends Controller
 {
@@ -20,14 +22,16 @@ class SetExamTime extends Controller
     private $sessionRepository;
     private $yearRepository;
     private $timeRepository;
+    private $reusableRepository;
     
-    public function __construct(TimeInterface $timeRepository, SemesterInterface $semesterRepository, AcademicSessionInterface $sessionRepository, AcademicYearInterface $yearRepository)
+    public function __construct(ReusableInterface $reusableRepository,TimeInterface $timeRepository, SemesterInterface $semesterRepository, AcademicSessionInterface $sessionRepository, AcademicYearInterface $yearRepository)
     {
         $this->middleware('auth');
         $this->semesterRepository = $semesterRepository;
         $this->sessionRepository = $sessionRepository;
         $this->yearRepository = $yearRepository;
         $this->timeRepository = $timeRepository;
+        $this->reusableRepository = $reusableRepository;
     }
 
     public function setTime()
@@ -44,6 +48,7 @@ class SetExamTime extends Controller
         $data['year'] = $this->yearRepository->all();
     
         $data['times'] = $this->timeRepository->all();
+        $data['userRole'] = $this->reusableRepository->getUserRole(Auth::user()->id);
 
         return view('Questions.setTime',$data);
     }
@@ -78,6 +83,7 @@ class SetExamTime extends Controller
         
          }
         $data['times'] = $this->timeRepository->all();
+        $data['userRole'] = $this->reusableRepository->getUserRole(Auth::user()->id);
 
         return view('Questions.setTime',$data);
     }

@@ -23,7 +23,10 @@ class StudentExamTimeRepository implements StudentExamTimeInterface
 
     public function updateCount(array $data, $id, $examID)
     {
-        return $this->model->where('studentID',$id)->where('examID',$examID)->update($data);
+        return $this->model
+        ->where('studentID',$id)
+        ->where('examID',$examID)
+        ->update($data);
     }
 
     public function ifexists($examID,$id)

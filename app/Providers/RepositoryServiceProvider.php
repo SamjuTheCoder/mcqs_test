@@ -35,6 +35,18 @@ use App\Repositories\Eloquent\TempQuestionRepository;
 use App\Repositories\TempQuestionInterface;
 use App\Repositories\Eloquent\SubjectsRepository;
 use App\Repositories\SubjectsInterface;
+use App\Repositories\CreateStudentRepository;
+use App\Repositories\CreateStudentInterface;
+use App\Repositories\ParentRepository;
+use App\Repositories\ParentInterface;
+use App\Repositories\SubjectClassRepository;
+use App\Repositories\SubjectClassInterface;
+use App\Repositories\StaffRepository;
+use App\Repositories\StaffInterface;
+use App\Repositories\TeacherClassRepository;
+use App\Repositories\TeacherClassInterface;
+use App\Repositories\ReusableRepository;
+use App\Repositories\ReusableInterface;
 
 use Illuminate\Support\ServiceProvider; 
 
@@ -64,7 +76,12 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(StudentExamTimeInterface::class, StudentExamTimeRepository::class);
         $this->app->bind(TempQuestionInterface::class, TempQuestionRepository::class);
         $this->app->bind(SubjectsInterface::class, SubjectsRepository::class);
-        
+        $this->app->bind(CreateStudentInterface::class, CreateStudentRepository::class);
+        $this->app->bind(ParentInterface::class,  ParentRepository::class);
+        $this->app->bind(SubjectClassInterface::class,  SubjectClassRepository::class);
+        $this->app->bind(StaffInterface::class,  StaffRepository::class);
+        $this->app->bind(TeacherClassInterface::class,  TeacherClassRepository::class);
+        $this->app->bind(ReusableInterface::class,  ReusableRepository::class);
     }
 
     /**

@@ -24,7 +24,9 @@ use App\Repositories\AcademicYearInterface;
 use App\Repositories\SemesterInterface;
 use App\Repositories\ClassInterface;
 use App\Repositories\CreateExamInterface;
+use App\Repositories\ReusableInterface;
 use DB;
+use Auth;
 use Session;
 
 class AdminController extends Controller
@@ -42,8 +44,9 @@ class AdminController extends Controller
     private $yearRepository;
     private $classRepository;
     private $createexamsRepository;
+    private $reusableRepository;
 
-    public function __construct(CreateExamInterface $createexamsRepository,ClassInterface $classRepository, SemesterInterface $semesterRepository, AcademicSessionInterface $sessionRepository, AcademicYearInterface $yearRepository, ExamtypeRepositoryInterface $examtypeRepository, UserRepositoryInterface $userRepository, TakeExamRepositoryInterface $takeexamRepository,AssignModuleRepositoryInterface $assignmoduleRepository, ModuleRoleRepositoryInterface $moduleroleRepository, QuestionRepositoryInterface $questionRepository,AnswerRepositoryInterface $answerRepository)
+    public function __construct(ReusableInterface $reusableRepository, CreateExamInterface $createexamsRepository,ClassInterface $classRepository, SemesterInterface $semesterRepository, AcademicSessionInterface $sessionRepository, AcademicYearInterface $yearRepository, ExamtypeRepositoryInterface $examtypeRepository, UserRepositoryInterface $userRepository, TakeExamRepositoryInterface $takeexamRepository,AssignModuleRepositoryInterface $assignmoduleRepository, ModuleRoleRepositoryInterface $moduleroleRepository, QuestionRepositoryInterface $questionRepository,AnswerRepositoryInterface $answerRepository)
     {
         $this->middleware('auth');
         $this->answerRepository = $answerRepository;
@@ -58,10 +61,12 @@ class AdminController extends Controller
         $this->yearRepository = $yearRepository;
         $this->classRepository = $classRepository;
         $this->createexamsRepository = $createexamsRepository;
+        $this->reusableRepository = $reusableRepository;
     }
 
     public function viewQuestions($id)
     {
+        $data['userRole'] = $this->reusableRepository->getUserRole(Auth::user()->id);
         $data['examID'] = base64_decode($id);
         $data['title'] = $this->createexamsRepository->getExamTitle($data['examID']);
         $data['questions'] = $this->questionRepository->all($data['examID']);
@@ -73,7 +78,7 @@ class AdminController extends Controller
 
     public function addQuestions($id)
     {
-        //dd(base64_decode($id));
+        $data['userRole'] = $this->reusableRepository->getUserRole(Auth::user()->id);
         $data['examID'] = base64_decode($id);
         $data['title'] = $this->createexamsRepository->getExamTitle($data['examID']);
 
@@ -124,7 +129,7 @@ class AdminController extends Controller
     {
         $data['questionx']='';
         $data['question'] = DB::table('questions')->get();
-
+        $data['userRole'] = $this->reusableRepository->getUserRole(Auth::user()->id);
         return view('Answers.addAnswers',$data);
     }
 
@@ -136,6 +141,9 @@ class AdminController extends Controller
         $data['questionID']=base64_decode($id);
         $data['question'] = DB::table('questions')->where('id',base64_decode($id))->get();
         $data['answer'] = $this->answerRepository->all(base64_decode($id));
+        $data['userRole'] = $this->reusableRepository->getUserRole(Auth::user()->id);
+
+        Session::put('questionID',base64_decode($id));
 
         return view('Answers.addAnswers',$data);
     }
@@ -144,7 +152,7 @@ class AdminController extends Controller
     {
         $data['questionx'] = $request->question;
         $data['question'] = DB::table('questions')->get();
-        
+        $data['questionID']=Session::get('questionID');
 
         if(DB::table('answers')->where('answer',$request->answer)->where('question_id',$request->question)->exists()){
             return back()->with('error_message','Record already exists');
@@ -154,23 +162,28 @@ class AdminController extends Controller
 
         $data['answer'] = $this->answerRepository->all($request->question);
         $data['questionID']=$request->question;
+        $data['userRole'] = $this->reusableRepository->getUserRole(Auth::user()->id);
 
         return view('Answers.addAnswers',$data);
     }
 
     public function deleteAnswers($id)
     {   
-        if(DB::table('take_exams')->where('answerID',base64_decode($id))->exists()){
+        //dd(Session::get('questionID'));
+        if(DB::table('take_exams')->where('answerID',base64_decode($id))->exists()) {
             return back()->with('error_message','Questions already in used');
         }else{
-        $data['questions'] = $this->answerRepository->deleteAnswer(base64_decode($id));
+
+            $this->answerRepository->deleteAnswer(base64_decode($id));    
         }
-        return back()->with('success','Answer deleted successfully!');
+        
+        return back()->with('error_message','Record deleted');
     }
 
     public function moduleRole()
     {
         $data['module'] = $this->moduleroleRepository->all();
+        $data['userRole'] = $this->reusableRepository->getUserRole(Auth::user()->id);
 
         return view('Modules.addRoute',$data);
     }
@@ -202,7 +215,7 @@ class AdminController extends Controller
         $data['modules'] = DB::table('modules')->get();
 
         $data['module'] = $this->assignmoduleRepository->all();
-
+        $data['userRole'] = $this->reusableRepository->getUserRole(Auth::user()->id);
         return view('Modules.assignModule',$data);
     }
 
@@ -236,7 +249,8 @@ class AdminController extends Controller
 
         $data['role'] = DB::table('roles')->get();
         $data['user'] = DB::table('users')->get();
-
+        $data['userRole'] = $this->reusableRepository->getUserRole(Auth::user()->id);
+        
         $data['user_role'] = DB::table('user_roles')
         ->leftjoin('roles','user_roles.roleID','=','roles.id')
         ->leftjoin('users','user_roles.userID','=','users.id')
@@ -274,6 +288,7 @@ class AdminController extends Controller
     public function allExam()
     {
         $data['myAnswers'] = $this->takeexamRepository->allExam();
+        $data['userRole'] = $this->reusableRepository->getUserRole(Auth::user()->id);
 
         return view('Student.allAnswers',$data);
     }

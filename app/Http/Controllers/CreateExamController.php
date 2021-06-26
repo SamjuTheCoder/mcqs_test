@@ -25,7 +25,9 @@ use App\Repositories\AcademicYearInterface;
 use App\Repositories\SemesterInterface;
 use App\Repositories\ClassInterface;
 use App\Repositories\CreateExamInterface;
+use App\Repositories\ReusableInterface;
 use DB;
+use Auth;
 
 class CreateExamController extends Controller
 {
@@ -42,8 +44,9 @@ class CreateExamController extends Controller
     private $yearRepository;
     private $classRepository;
     private $createexamsRepository;
+    private $reusableRepository;
 
-    public function __construct(CreateExamInterface $createexamsRepository, ClassInterface $classRepository, SemesterInterface $semesterRepository, AcademicSessionInterface $sessionRepository, AcademicYearInterface $yearRepository, ExamtypeRepositoryInterface $examtypeRepository, UserRepositoryInterface $userRepository, TakeExamRepositoryInterface $takeexamRepository,AssignModuleRepositoryInterface $assignmoduleRepository, ModuleRoleRepositoryInterface $moduleroleRepository, QuestionRepositoryInterface $questionRepository,AnswerRepositoryInterface $answerRepository)
+    public function __construct(ReusableInterface $reusableRepository,CreateExamInterface $createexamsRepository, ClassInterface $classRepository, SemesterInterface $semesterRepository, AcademicSessionInterface $sessionRepository, AcademicYearInterface $yearRepository, ExamtypeRepositoryInterface $examtypeRepository, UserRepositoryInterface $userRepository, TakeExamRepositoryInterface $takeexamRepository,AssignModuleRepositoryInterface $assignmoduleRepository, ModuleRoleRepositoryInterface $moduleroleRepository, QuestionRepositoryInterface $questionRepository,AnswerRepositoryInterface $answerRepository)
     {
         $this->middleware('auth');
         $this->answerRepository = $answerRepository;
@@ -58,10 +61,12 @@ class CreateExamController extends Controller
         $this->yearRepository = $yearRepository;
         $this->classRepository = $classRepository;
         $this->createexamsRepository = $createexamsRepository;
+        $this->reusableRepository = $reusableRepository;
     }
 
     public function viewExams()
     {
+
         $data['sessionx']='';
         $data['termx']='';
         $data['yearx']='';
@@ -69,13 +74,34 @@ class CreateExamController extends Controller
         $data['classx']='';
         $data['questiontypex'] = '';  
 
-        $data['exams'] = $this->createexamsRepository->all();
         $data['questiontype'] = $this->questionRepository->questionTypes();
         $data['examtype'] = $this->examtypeRepository->all();
         $data['session'] = $this->sessionRepository->all();
         $data['term'] = $this->semesterRepository->all();
         $data['year'] = $this->yearRepository->all();
-        $data['class'] = $this->classRepository->all();
+        $data['userRole'] = $this->reusableRepository->getUserRole(Auth::user()->id);
+
+        if(Auth::user()->studentID==null)
+        {
+            $data['class'] = $this->classRepository->all();
+            $data['exams'] = $this->createexamsRepository->all();
+        }
+        else {
+        $getRole = $this->classRepository->getStaffRole(Auth::user()->studentID);
+
+        if($getRole->role==7) //check for ICT admin
+        {
+            $data['class'] = $this->classRepository->all();
+            $data['exams'] = $this->createexamsRepository->all();
+        }
+        if($getRole->role==3) //check for teacher
+        {
+            $data['class'] = $this->classRepository->getTeacherClass($getRole->id);
+            $data['exams'] = $this->createexamsRepository->getExamDetailByUser(Auth::user()->id);
+        }
+
+        
+    }
 
         return view('Questions.addExam',$data);
     }
@@ -89,11 +115,14 @@ class CreateExamController extends Controller
       ->leftjoin('subjects','class_subjects.subject','=','subjects.id')
       ->where('class_subjects.class', '=',$class_id)
       ->get();
+
       return response()->json($data); 
     }
     //add questions
     public function saveExams(Request $request)
     {
+        $data['userRole'] = $this->reusableRepository->getUserRole(Auth::user()->id);
+
         $this->validate( $request, [
             'class' => 'required',
             'session' => 'required',
@@ -135,6 +164,7 @@ class CreateExamController extends Controller
             return back()->with('error_message','Question already exists');
         }else {
         $data['exams'] = $this->createexamsRepository->create([
+            'userID'=>Auth::user()->id,
             'examtype'=>$request->examtype,
             'question_type'=>$request->question_type,
             'class'=>$request->class,
@@ -148,8 +178,29 @@ class CreateExamController extends Controller
             'time'=>$time,
             'instruction'=>$request->instruction]);
         }
-        $data['exams'] = $this->createexamsRepository->all();
-        //return back()->with('success','Question addedd successfully!');
+
+        if(Auth::user()->studentID==null)
+        {
+            $data['class'] = $this->classRepository->all();
+            $data['exams'] = $this->createexamsRepository->all();
+        }
+        else {
+        $getRole = $this->classRepository->getStaffRole(Auth::user()->studentID);
+
+        if($getRole->role==7) //check for ICT admin
+        {
+            $data['class'] = $this->classRepository->all();
+            $data['exams'] = $this->createexamsRepository->all();
+        }
+        if($getRole->role==3) //check for teacher
+        {
+            $data['class'] = $this->classRepository->getTeacherClass($getRole->id);
+            $data['exams'] = $this->createexamsRepository->getExamDetailByUser(Auth::user()->id);
+
+        }
+
+    }
+ 
         return view('Questions.addExam',$data);
     }
 

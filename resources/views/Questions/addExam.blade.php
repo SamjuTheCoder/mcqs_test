@@ -276,14 +276,14 @@
                   <tr>
                        <th>SN</th>
                        <th>Exam Type</th>
-                       <th>Questions Type</th>
+                       <th>Type</th>
                        <th>Term</th>
                        <th>Class</th>
                        <th>Subject</th>
                        <th>Session</th>
                        <th>Year</th>
                        <th>Exam Title </th>
-                       <th>Time Alloted</th>
+                       <th>Time</th>
                        <th>Active<br> Status</th>
                        <th colspan="2">Action</th>
 
@@ -304,8 +304,9 @@
                     <td>{{ $exam->examname }}</td>
                     <td>{{ $exam->hour ? $exam->hour.'hrs' : '' }}  {{ $exam->mins ? $exam->mins.'mins' : '' }} </td>
                     <td>
-                    @if($exam->active_status==0)<a onclick="activateExam('{{ base64_encode($exam->qid) }}')"><button class="btn btn-danger" title="Exam Not Active"><i class="fa fa-remove"></i></button></a>
-                    @elseif($exam->active_status==1) <a onclick="deactivateExam('{{ base64_encode($exam->qid) }}')"><button class="btn btn-success" title="Exam Active"><i class="fa fa-check"></i></button></a>  @endif</td>
+                    @if($exam->active_status==0)<a  class="badge badge-danger" style="color:red !important" onclick="activateExam('{{ base64_encode($exam->qid) }}')"><i class="fa fa-remove"></i> <span>Inactive</span><a>
+                    
+                    @elseif($exam->active_status==1) <a href="" class="text-info" style="color:green !important" onclick="deactivateExam('{{ base64_encode($exam->qid) }}')"><i class="fa fa-check"></i> <span>active</span></a>  @endif</td>
                    </td>
                     <td><a href="add-questions/{{ base64_encode($exam->qid) }}"><button class="btn btn-info" title="Add Questions to Exam"><i class="fa fa-plus"></i></button></a>
                     <a href="view-questions/{{ base64_encode($exam->qid) }}" target="_blank"><button class="btn btn-success" title="View Questions"><i class="fa fa-eye"></i></button></a>

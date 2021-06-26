@@ -80,5 +80,32 @@ Route::get('/view-past-exams/{id}/{id2}/{id3}/{id4}/{id5}', [App\Http\Controller
 Route::get('/set-time', [App\Http\Controllers\SetExamTime::class, 'setTime'])->name('setTime');
 Route::post('/set-time', [App\Http\Controllers\SetExamTime::class, 'saveTime'])->name('saveTime');
 
+//create students
+Route::get('/add-student', [App\Http\Controllers\CreateStudentController::class, 'addStudent'])->name('addStudent');
+Route::post('/add-student', [App\Http\Controllers\CreateStudentController::class, 'saveStudent'])->name('saveStudent');
+
+//create students
+Route::get('/add-parent', [App\Http\Controllers\ParentController::class, 'addParent'])->name('addParent');
+Route::post('/add-parent', [App\Http\Controllers\ParentController::class, 'saveParent'])->name('saveParent');
+Route::get('/get-lga', [App\Http\Controllers\ParentController::class, 'getLga'])->name('getLga'); //ajax
+Route::get('/get-parent', [App\Http\Controllers\ParentController::class, 'getParent'])->name('getParent'); //ajax
+
+//assign subject to class
+Route::get('/assign-subject-class', [App\Http\Controllers\SubjectClassController::class, 'classSubject'])->name('classSubject');
+Route::get('/load-subject-class/{id}', [App\Http\Controllers\SubjectClassController::class, 'loadClassSubject'])->name('loadClassSubject');
+
+Route::post('/assign-subject-class', [App\Http\Controllers\SubjectClassController::class, 'assignSubject'])->name('assignSubject');
+
+//add staff
+Route::get('/add-staff', [App\Http\Controllers\StaffController::class, 'addStaff'])->name('addStaff');
+Route::post('/add-staff', [App\Http\Controllers\StaffController::class, 'saveStaff'])->name('saveStaff');
+Route::get('/get-lga', [App\Http\Controllers\StaffController::class, 'getLga'])->name('getLga'); //ajax
+//Route::get('/get-staff', [App\Http\Controllers\ParentController::class, 'getParent'])->name('getParent'); //ajax
+
+//assign teacher to class
+Route::get('/assign-teacher-class', [App\Http\Controllers\TeacherClassController::class, 'classTeacher'])->name('classTeacher');
+Route::get('/load-teacher-class/{id}', [App\Http\Controllers\TeacherClassController::class, 'loadClassTeacher'])->name('loadClassTeacher');
+
+Route::post('/assign-teacher-class', [App\Http\Controllers\TeacherClassController::class, 'assignTeacher'])->name('assignTeacher');
 
 });

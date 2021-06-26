@@ -7,9 +7,13 @@ use Illuminate\Support\Collection;
 
 interface ClassInterface
 {
-    public function all(): Collection;
+    public function all();
 
     public function edit($id);
 
     public function delete($id);
+
+    public function getStaffRole($id);
+
+    public function getTeacherClass($id);
 }
